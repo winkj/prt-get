@@ -1,0 +1,39 @@
+PRT-GET OVERVIEW:
+(Johannes Winkelmann, jw@tks6.net)
+
+
+Description:
+------------
+prt-get is a utility which is meant to be used with the pkgutils and
+ports from crux (http://crux.nu). It offers some simplification over
+pure pkgmk, but might hide some interesting details about the install
+process. 
+
+Installing:
+-----------
+Just install the crux port from
+- http://www.hta-bi.bfh.ch/~winkj/files/crux/prt-get.prt.gz
+
+prt-get has to know where to look for ports. You can specify those in
+/etc/prt-get.conf, one directory per line. Note that the order
+matters, when the same port is in multiple direcories
+(e.g. /usr/ports/contrib/mutt and /usr/ports/local/mutt), the one
+found _first_ will be used.
+
+Feel free to contact me in case of problems (jw@tks6.net)
+
+
+more information
+----------------
+See the man pages for prt-get(8), prt-get.conf(5) and prt-cache for more
+information. There is also a user manual in the doc directory (as a
+tex file). This document should also be available as PDF from
+http://www.hta-bi.bfh.ch/~winkj/files/crux/manual.pdf
+
+"it must be user error" (thinkgeek)
+-----------------------------------
+
+port directories may only contain ports, or else prt-get can fail (which
+means that nothing is installed, your system takes no harm). The reason
+for this is because the additional checking slows down the application
+too much

@@ -1,0 +1,157 @@
+.\" man page for prt-get.conf
+.\" Johannes Winkelmann, jw@tks6.net
+
+
+.PU
+.TH prt-get.conf 5
+.SH "NAME"
+.LP 
+prt-get.conf - Configuration file for prt-get
+
+.SH "DESCRIPTION"
+This file, by default
+.IR /etc/prt-get.conf ,
+is read by prt-get and prt-cache (see prt-get(8) and prt-cache(8))
+.LP
+It might look like this:
+.IP
+.nf
+###
+# prt-get.conf
+
+# root directories
+prtdir /usr/ports/base
+prtdir /usr/ports/opt
+prtdir /usr/ports/contrib
+
+prtdir /usr/ports/unofficial
+
+# use mutt and yafc from local build directory
+prtdir /home/jw/build:mutt, yafc
+
+# change default location of cache file
+cachefile /tmp/port-cache
+
+# write a log file
+writelog enabled
+logmode append
+logfile /tmp/log/%n.log
+
+# show compact readme information
+readme compact
+
+# execute pre- and post-installs scripts (default no)
+runscripts yes
+
+# don't prefer higher versions (default no)
+preferhigher yes
+
+# use regexps for searching (default no)
+useregex yes
+.fi
+
+.LP
+There are a few values to be configured: the location where to look
+for the ports, the location of the cache file, some log options and
+how to notify the user about README files.
+
+If you don't specify the
+cache file, the default location is
+.B /var/lib/pkg/prt-get.conf
+
+.LP
+Every line can contain one configuration option. The format of the lines
+is
+.B <key> <value>.
+The valid keys are
+.B prtdir
+and
+.B cachefile.
+The value for 
+.B prtdir 
+is a directory, the value for
+.B cachefile
+is a file to be used as cache
+
+.nf
+<portname1>:<dependency1> <dependency2>
+<portname2>:<dependency1>
+
+.B runscripts
+if set to yes, execute pre- and post-install scripts
+
+.B preferhigher
+if set to yes, prt-get will parse version strings and prefer the
+higher one, even if the one found in the ports tree is lower. Will
+influence diff, quickdiff and sysup
+
+.B useregex
+if set to yes, prt-get will interpret search and filter patterns in
+list, listinst, printf, search, dsearch and fsearch as regular
+expressions. This will be the default in prt-get 0.6.
+
+.LP
+.B makecommand
+.B addcommand
+.B removecommand
+.B runscriptcommand
+can be used to use an alternate command instead of 'pkgmk' for the
+makecommand,'pkgadd' for the addcommand, 'pkgrm' for the
+removecommand and 'sh' for the command which is used to run the pre- and
+post-install scripts. These are expert options which shouldn't be used
+in general; when used the wrong way, they can completely break prt-get's
+original functionality.
+
+
+
+.LP
+The log options are
+.B writelog
+which can be set to 'enabled' or 'disabled'
+.B logmode
+which can be set to 'append' or 'overwrite'
+.B logfile
+which represent the file path. All occurances of %n in logfile are
+replaced with the port name and all occurances of  %p are
+replaced with the port's path, e.g. for port gcc in base, %p would be
+.B /usr/base
+and %n
+.B gcc.
+This allows you to have separate log files per port. 
+
+.LP
+If the readme option is set to something different than 'disabled',
+prt-get will notify the user if she/he installs a port with a README
+file. The option to configure this is called
+.B readme
+which can be set to 'verbose' (print separate information about README
+files), 'compact' (integrate in result output) or 'disabled' (no information about README files). See
+.B prt-get(8)
+and especially the readme command how to read those README files using
+prt-get
+
+.LP
+The order of the prtdir options is important, as if a port is in multiple
+directories, prt-get will use the one found first (directories listed
+first have precedence)
+
+.LP
+If you want to restrict the ports used from one prtdir, you can
+append a comma separated list of ports to be used after the path,
+using a colon (':') character to separate the two components
+.B path:package1, package2,...
+Note that this slows down prt-get a lot if you list a lot of packages.
+If you become aware of speed problems due to this, create a separate
+ports directory instead and use symlinks for the ports you want to use
+
+.LP
+You can write comments after a '#' character. If you have '#'
+characters in you pathes, there's no way to escape them (as there is no
+way to escape ':' characters). Complain to the author if this is a 
+problem :-)
+
+
+.SH "AUTHORS"
+Johannes Winkelmann <jw@tks6.net>
+.SH "SEE ALSO"
+prt-get(8), pkgmk(8) pkgadd(8), ports(8)

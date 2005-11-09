@@ -1,0 +1,98 @@
+# prt-get(8), prt-cache(8) completion by Johannes Winkelmann, jw@tks6.net 
+# problems: options ending on = should not add a space afterwards
+#
+# 07.07.2002:   use prt-get listinst (from 0.3.1pre1) instead of pkginfo
+# 06.07.2002:   first version
+
+_prt-get()
+{
+	local cur prev
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	if [ $COMP_CWORD -eq 1 ]; then
+		COMPREPLY=( $( compgen -W ' \
+                    install depinst update grpinst help \
+                    version readme list info path \
+                    search dsearch fsearch printf cache \
+                    dependent sysup current lock unlock \
+                    listlocked diff quickdiff depends quickdep \
+                    dup isinst cat ls edit deptree \
+                    remove listinst' $cur ))
+        fi
+
+       
+        if [ $COMP_CWORD '>' 1 ]; then
+            if [[ "$cur" != -* ]]; then
+	        case ${COMP_WORDS[1]} in
+                    "install" | "depinst" | "grpinst"  | "path" | "dependent" | \
+                    "depends" | "quickdep" | "info" | "readme" | \
+                    "ls" | "isinst" | "deptree" )
+    		 	    if [ -f /var/lib/pkg/prt-get.cache ]; then
+                            	plist=`prt-cache list`
+				if [ ! "$plist" == "" ]; then
+	                            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+				fi
+			    fi
+                            ;;
+		    "cat" | "edit" )
+		        if [ $COMP_CWORD '>' 2 ]; then
+			    plist=`prt-get ls ${COMP_WORDS[2]}`
+			    COMPREPLY=( $( compgen -W '$plist' $cur ) )
+                        else
+			    if [ -f /var/lib/pkg/prt-get.cache ]; then
+                            	plist=`prt-cache list`
+				if [ ! "$plist" == "" ]; then
+	                            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+				fi
+			    fi
+                        fi
+			    ;;
+                    "current"|"lock"|"remove")
+                            plist=`prt-get listinst`
+                            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+                            ;;
+                    "update")
+                            plist=`prt-get quickdiff`
+                            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+                            ;;
+                    "unlock")
+                            plist=`prt-get listlocked`
+                            COMPREPLY=( $( compgen -W '$plist' $cur ) )
+                            ;;
+                esac
+            else
+                case ${COMP_WORDS[1]} in
+                    "install" | "update" | "groupinst")
+                        COMPREPLY=( $( compgen -W  '--config= --cache \
+                                                    --pre-install \
+                                                    --post-install \
+                                                    --install-scripts \
+                                                    --log --test \
+                                                    --config \
+					            --config-append= \
+					            --config-prepend= \
+					            --config-set= \
+                                                    --aargs= --margs= \
+						    --rargs= \
+                                                    --install-root=' \
+                                                     -- $cur ) )
+                        ;;
+                    "list" | "search" | "dsearch" )
+                        COMPREPLY=( $( compgen -W '-v -vv --cache \
+                        --config=' -- $cur ) )
+                        ;;
+                    *)
+                        COMPREPLY=( $( compgen -W '--cache --log --test --config=' \
+                        -- $cur ) )
+                        ;;
+                esac
+            fi
+        fi
+
+	return 0
+}
+complete -F _prt-get -o default prt-get
+complete -F _prt-get -o default prt-cache

@@ -1,0 +1,28 @@
+# dependencies for opt ports, 16 May 2004, Jürgen Daubert
+
+atk         : glib        
+audiofile   : pkgconfig   
+cvs         : openssl     
+emacs       : x11         libtiff     
+esound      : audiofile   
+fetchmail   : openssl     
+firefox     : gtk         libidl      
+fontconfig  : freetype    expat       pkgconfig   
+glib        : gettext     pkgconfig   
+gtk         : atk         pango       libtiff
+libidl      : glib        
+libogg      : pkgconfig   
+libpng      : pkgconfig   
+libtiff     : libjpeg     
+libvorbis   : libogg      
+openssh     : openssl     
+pango       : glib        x11         
+pine        : openssl     
+ppp         : openssl     
+webfs       : openssl     
+windowmaker : x11         libtiff     libungif    
+xchat       : gtk         openssl     
+x11         : fontconfig  libpng   
+zip         : unzip
+
+# End of file  

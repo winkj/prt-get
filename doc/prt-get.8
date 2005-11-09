@@ -1,0 +1,538 @@
+.\" man page for prt-get
+.\" Johannes Winkelmann, jw@tks6.net
+.\" 
+.\" my first man page, so forgive me for the errors :-)
+.\" 
+.\" .PU
+.TH "prt-get" "8" "" "" ""
+.SH "NAME"
+.LP 
+prt\-get \- an advanced package management tool to be used with
+pkgutils from CRUX (see http://www.crux.nu)
+.SH "SYNOPSIS"
+.B prt\-get command [options] <arguments>
+.br 
+.SH "DESCRIPTION"
+prt\-get is a package management tool which provides additional
+functionality to crux' package management system. It works with the
+local ports tree and is therefore fully compatible with ports(8) and
+pkgmk(8)/pkgadd(8). It offers the following features:
+
+.PP
+.TP 
+\ \ \ \(bu
+abstract ports installation/update from file system
+
+.TP 
+\ \ \ \(bu
+install/update a list of packages with one command
+
+.TP 
+\ \ \ \(bu
+list dependencies for a list of packages
+
+.TP 
+\ \ \ \(bu
+show information about ports
+
+.TP 
+\ \ \ \(bu
+search within the ports
+
+.PP 
+
+What prt\-get basically does is installing and upgrading packages, using
+pkgmk and pkgadd. Additionally, you don't have be in the port's
+directory to call prt\-get. prt\-get will search for the respective port
+itself in a list of directories specified in /etc/prt\-get.conf. This
+allows you to just install or update a package, without caring where
+it actually is located on your file system.
+
+.PP 
+
+prt\-get also offers some features like searching ports by name,
+showing information about ports (without installing them of course)
+and can list the dependencies listed in the Pkgfile, and provide a
+complete dependency list for a port. Note that dependencies are no
+requirement for crux packages and therefore not always accurate. There's
+a possiblity to use an external dependency map to get dependency
+listings for ports which don't provide them in their Pkgfile.
+
+.PP 
+
+prt\-get has a test mode so you can see what effect an install/update
+operation would have. Use the \-\-test switch for this (see also:
+OPTIONS)
+
+.SH "RETURN VALUE"
+prt\-get returns 0 on success and a non-zero value otherwise (exact
+value -> meaning mapping to be determined...)
+
+.SH "COMMANDS"
+prt\-get uses so called commands, which always have to be the first 
+non-option argument passed. This is very similar to
+.B cvs(1).
+[command] can be one of the following:
+
+
+.TP 
+.B install [\-\-margs] [\-\-aargs] [\-\-log] <package1> [<package2> ...]
+install all packages in the listed order. Note that you can do this
+from any directory
+
+.TP 
+.B depinst [\-\-margs] [\-\-aargs] [\-\-log] <package1> [<package2> ...]
+install all packages in the listed order including their dependencies.
+Note that outdated packages won't be updated.
+
+.TP 
+.B grpinst [\-\-margs] [\-\-aargs]  [\-\-log] <package1> [<package2> ...]
+install all packages in the listed order, but stop if installation of
+one package fails. This can be used to install packages where package2
+depends on package1
+
+.TP 
+.B update [\-\-margs] [\-\-aargs]  [\-\-log] <package1> [<package2> ...]
+update all packages listed in this order
+
+.TP 
+.B remove <package1> [<package2> ...]
+remove packages listed in this order
+
+.TP 
+.B sysup [\-\-nodeps]
+Update all installed packages which are outdated. Sorts by dependencies
+if specified. If you don't want prt-get to resolve the dependencies, use
+the --nodeps switch. Also see the
+.B lock
+and
+.B unlock
+commands to keep the currently installed versions, even if there are
+changes in the ports tree. If you want to update only diffs which have
+a lower version installed than the one in the ports tree, use the
+--prefer-higher option.
+
+.TP 
+.B lock <package1> [<package2>...]
+Do not update these packages in a
+.B sysup
+operation
+
+.TP 
+.B unlock <package1> [<package2>...] 
+Remove lock from these packages
+
+.TP 
+.B listlocked [-v|-vv]
+List names of packages which are locked. As always,
+.B -v
+will additionally show the version, and
+.B -vv
+also includes the description from the Pkgfile. Note that the
+.B -vv
+switch will slow down the operation remarkably.
+
+.TP 
+.B diff [--all] [<package1> <package2> ...]
+show differences between installed packages and ports in the ports
+tree. If arguments are given, shows only differences for these
+packages, otherwise all differences are shown. It's also possible to use
+shell like
+.B wildcards
+for the diff command. Make sure you escape where needed. Locked
+packages are only displayed if you use the --all switch. If you want
+to see only diffs which have a lower version installed than the one in
+the ports tree, use the --prefer-higher option.
+
+.TP 
+.B quickdiff
+prints a simple list of packages which have a different version in the
+ports tree than what is installed. This is meant as an input for
+.B prt\-get update,
+so you can update all ports on your system with one simple command. If you want
+to see only diffs which have a lower version installed than the one in
+the ports tree, use the --prefer-higher option.
+
+.TP 
+.B search [\-v|\-vv] [--path] [--regex]<expr>
+Search the ports tree for
+.B expr
+in their name
+
+.TP 
+.B dsearch [\-v|\-vv] [--path]  [--regex]<expr>
+Search the ports tree for
+.B expr
+in both name and description. The search in the description is not case
+sensitive. Note that this requires prt\-get to read every Pkgfile, which
+makes it rather slow; if you like this, consider using the cache
+functionality, so you only have to spend this time once after updating
+the ports tree has been updated.
+
+.TP 
+.B fsearch [--full] [--regex] <pattern>
+Search the ports tree for
+.B pattern
+as file name in their footprint. When called without '--full', strips
+the directories from the file names before matching; this behaviour
+will change in prt-get 0.6, where full path search will be
+default. Pattern can be a shell-like wildcard pattern (e.g prt-get
+fsearch "*.h") or regexps.
+
+
+.TP 
+.B info <port>
+Print available info for a port 
+
+.TP 
+.B path <port>
+Print the path of a port
+
+.TP 
+.B readme <port>
+Print the port's README file if it exists
+
+.TP 
+.B depends <package1> [<package2> ...]
+print a recursive list of dependencies to install the packages passed
+as argument. It shows a list with ports which are found, plus a list
+of ports which are missing
+
+.TP 
+.B quickdep <package1> [<package2> ...]
+print a simple list of recursive dependencies for all the ports passed
+as argument in a simple format to be used by
+.B prt\-get install
+to make an install including dependencies
+.B Does not display dependencies which are not in the ports tree
+
+.TP 
+.B dependent <package>
+print a list of package which depend on
+.B package. 
+Only list direct dependencies. Usually shows dependent packages which
+are installed. To see all dependencies, add the --all switch
+
+.TP 
+.B deptree <package>
+print a tree of the dependencies of the package
+.B package. 
+Subtrees already shown are marked with '-->' to save some space, in
+order to show them all, add the --all switch
+
+.TP 
+.B dup
+List ports which can be found in multiple directories configured in
+.B /etc/prt.get.conf
+
+
+.TP 
+.B list [\-v|\-vv] [filter] [--path] [--regex]
+List ports available in the ports tree. It's basically the same as
+.B ports \-l
+but looks in all directories specified in
+.B /etc/prt\-get.conf.
+It's also possible to use
+shell like
+.B wildcards
+for the list command. Make sure you escape where needed
+
+.TP 
+.B printf <format string1> [\-\-sort=<format string2>] [\-\-filter=<filter>]
+Print formated port list format string can contain variables, which
+are replaced like this:
+.TP 
+\ \ \ \(bu
+%n \-> name
+
+.TP 
+\ \ \ \(bu
+%p \-> path
+
+.TP
+\ \ \ \(bu
+%v \-> version
+
+.TP 
+\ \ \ \(bu
+%r \-> release
+
+.TP 
+\ \ \ \(bu
+%d \-> description
+
+.TP 
+\ \ \ \(bu
+%e \-> dependencies
+
+.TP 
+\ \ \ \(bu
+%u \-> URL
+
+.TP 
+\ \ \ \(bu
+%P -> Packager
+
+.TP 
+\ \ \ \(bu
+%M -> Maintainer
+
+.TP 
+\ \ \ \(bu
+%R -> Readme ("yes"/"no")
+
+.TP 
+\ \ \ \(bu
+%E -> pre-install script ("yes"/"no")
+
+.TP 
+\ \ \ \(bu
+%O -> post-install script ("yes"/"no")
+
+.TP 
+\ \ \ \(bu
+%l -> is locked ("yes"/"no")
+
+.TP 
+\ \ \ \(bu
+%i \-> "no" if not installed, "yes" if it's installed and
+up to date and "diff" if it's installed and a new version is in the
+ports tree.
+
+Use "\\n" and "\\t" to format your output (no additional format specified
+suported). The optional format string2 can contain the same variables
+as format string1 and is used to sort the output. You can specify a
+.B wildcard filter
+to filter by package name.
+
+
+.TP 
+.B listinst [\-v|\-vv] [filter] [--regex]
+List installed ports. It's basically the same as
+.B pkginfo \-i,
+but omits version when called without verbose (\-v, \-vv) switch. Plus
+it is notably faster in my tests. \-v adds version information, \-vv
+adds version and description.
+.B Warning:
+\-vv will slow down the process because it requires prt\-get to scan
+both the ports database and the ports tree.
+It's also possible to use shell like
+.B wildcards
+for the listinst command. Make sure you escape where needed
+
+
+
+.TP 
+.B isinst <package>
+Check whether a package is installed. The same as
+.B pkginfo \-i|grep ^package
+.TP 
+
+.TP
+.B current <package>
+Prints out the version of the currently installed package
+
+
+.TP
+.B ls [--path] <package>
+Prints out a listing of the port's directory
+
+.TP
+.B cat <package> [<file>]
+Prints out the file to stdout. If <file> is not specified, 'Pkgfile' is used
+
+.TP
+.B edit <package> <file>
+Edit the file using the editor specified in the $EDITOR environment variable.
+If <file> is not specified, 'Pkgfile' is used
+
+
+.TP 
+.B help
+Shows a help screen
+
+.TP 
+.B dumpconfig
+Dump the configuration to the current terminal 
+
+.TP 
+.B version 
+Shows the current version of prt\-get
+
+.TP 
+.B cache
+create a cache file from the ports tree to be used by prt\-get using the
+\-\-cache option. Remember to run prt\-get cache each time you update the
+ports tree
+
+.SH "OPTIONS"
+
+.TP
+.B -f, -i
+Force install; Implies 'pkgadd -f'; same as --aargs=-f
+
+.TP
+.B -fr
+Force rebuild, Implies 'pkgmk -f'; same as --margs=-f
+
+.TP
+.B -um
+Update md5sum, implies 'pkgmk -um'; same as --margs=-um
+
+.TP
+.B -im
+Ignore md5sum, implies 'pkgmk -im'; same as --margs=-im
+
+.TP
+.B -uf
+Update footprint, implies 'pkgmk -uf'; same as --margs=-uf
+
+.TP
+.B -if
+Ignore footprint, implies 'pkgmk -if'; same as --margs=-if
+
+.TP
+.B -ns
+No stripping, implies 'pkgmk -ns'; same as --margs=-ns
+
+.TP
+.B -kw
+Keep working directory, implies 'pkgmk -kw'; same as --margs=-kw
+
+.TP
+.B --ignore=<package1,package2,...>
+Don't install those packages, even if they're listed as dependency
+
+
+.TP 
+.B \-\-cache
+Use cache file for this command
+
+.TP 
+.B \-\-test
+Dry run, don't actually install anything, mostly interesting for
+.B prt\-get install, prt\-get grpinst, prt\-get update, prt\-get sysup
+
+.TP 
+.B \-\-pre-install
+Execute pre-install script if it's there
+
+.TP 
+.B \-\-post-install
+Execute post-install script if it's there
+
+.TP 
+.B \-\-install-scripts
+Execute pre-install and post-install script if they're there
+
+.TP 
+.B \-\-no-std-config
+Don't parse the default configuration file
+
+.TP 
+.B \-\-config-prepend=<string>
+Prepend <string> to configuration
+
+.TP 
+.B \-\-config-append=<string>
+Append <string> to configuration
+
+.TP 
+.B \-\-config-set=<string>
+Set <string> in configuration, overriding configuration file
+
+
+.TP 
+.B \-v, \-vv
+verbose and more verbose, relevant for
+.B prt\-get search, prt\-get list
+verbose shows version of a port, more verbose shows version and
+description (if available)
+
+.B \-\-path
+Show path info; used in 'search', 'dsearch', 'list' and 'depends'
+
+.B \-\-regex
+Interpret filter and search pattern as regular expression
+
+.TP 
+.B \-\-margs="...", e.g. \-\-margs="\-im"
+arguments to be passed to pkgmk, relevant for
+.B prt\-get install, prt\-get grpinst, prt\-get update
+note that \-d is already passed to pkgmk anyway
+
+.TP 
+.B \-\-aargs="...", e.g. \-\-aargs="\-f"
+arguments to be passed to pkgadd, relevant for
+.B prt\-get install, prt\-get grpinst, prt\-get update
+
+.TP 
+.B \-\-rargs="..."
+arguments to be passed to pkgrm; currently not used, implemented for
+future uses and consistency reasons
+
+.TP
+.B \-\-prefer-higher, -ph
+Make prt-get parse the version strings and prefer the higher version,
+even if the one found in the ports tree is lower. Will influence diff,
+quickdiff and sysup.
+
+.TP
+.B \-\-strict-diff, -sd
+Override the 'preferhigher' configuration option
+
+
+.TP 
+.B \-\-config=<file>
+Use alternative configuration file to read ports directories from
+
+.TP
+.B \-\-install-root=<dir>
+Use <dir> as root directory for your installation; allows to install to
+a different directory than '/'. In daily usage, this option is not
+required; helpful if you're developing an independent installation.
+
+.TP 
+.B \-\-log
+Write build output to log file
+
+.SH "CONFIGURATION"
+.TP 
+See man prt\-get.conf(5)
+
+.SH "EXAMPLES"
+.TP 
+.B prt\-get install irssi
+download, build and install irssi, with one simple command
+
+.TP 
+.B prt\-get install indent mplayer
+install indent and mplayer
+
+.TP 
+.B prt\-get update openssh
+update your current version of openssh :\-)
+
+.TP 
+.B prt\-get info kdelibs
+show info about kdelibs
+
+.TP 
+.B prt\-get search icq
+Search all ports containing 'icq' in their name
+
+.TP 
+.B prt\-get grpinst \-\-test `prt\-get quickdep kdenetwork`
+Show what would happen if you installed all packages needed for
+kdenetwork (test mode). Remove \-\-test to install kdenetwork and all
+it's dependencies. Remember that grpinst stops installing when one
+installing of one package fails
+
+.TP 
+.B prt\-get update `prt\-get quickdiff`
+Update all packages where a different version is in the ports tree
+
+.SH "AUTHORS"
+Johannes Winkelmann <jw@tks6.net>
+.SH "SEE ALSO"
+prt\-get.conf(5), prt\-cache(8), pkgmk(8) pkgadd(8), ports(8)

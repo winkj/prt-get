@@ -1,0 +1,6 @@
+Installing prt-get
+------------------
+Installing prt-get is just a matter of
+./configure 
+make 
+make install

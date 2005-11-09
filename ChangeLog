@@ -1,0 +1,373 @@
+* 0.5.11	29.05.2005  Johannes Winkelmann
+- add --path to 'ls'
+- initial regex support
+- replace `uname -r` and `date +...` in version strings
+- add 'useregex' config key and --regex command line argument
+- Add --full to fsearch
+- use regex in fsearch if requested
+- add leading slash to fsearch result
+- support both `` and $()
+- support date patterns like '+%Y'
+- add aliases and deplist to dist-tarball
+- support multiple shell patterns in version
+
+* 0.5.10	21.04.2005  Johannes Winkelmann
+- fix bugs #3735, #3836
+- implement --ignore=<port1>,<port2> feature
+- fix --path for list, search
+- add --path for depends
+- enable logfile and depfile in default prt-get.conf
+
+
+* 0.5.9         06.12.2005  Johannes Winkelmann
+- add alias support
+- use absolut pathes for commands (pkgmk et al)
+- add -v switch to 'info' to show the readme
+- fix 'keephigher' in default prt-get.conf
+- add deptree to 'help'
+- remove some debug test
+- prettify error message when packages are not found
+- change 'bash' to 'sh' in process.cpp
+- use 'Pkgfile' as default file for cat and edit if no second argument given
+
+* 0.5.8		31.10.2004  Johannes Winkelmann
+- re-enable version parseing; use --prefer-higher to make prt-get use
+  it
+- implement shortcuts to frequentily used pkgmk/pkgadd options
+- make -f do 'pkgadd -f'
+- add new versioncomparator class
+- implement 'alpha' < 'beta' < 'gamma' < 'delta'
+
+* 0.5.7         16.07.2004  Johannes Winkelmann
+- add the --install-root argument to allow installation to a different root
+- add the --rargs switch to pass options to pkgmk in "prt-get remove"
+- add 'removecommand' configuration key
+- add 'runscriptcommand' configuration key
+- improve config parsing: options can now be in front of command
+
+* 0.5.6		06.01.2004  Johannes Winkelmann
+- add four new command line arguments:
+  --no-std-config            Don't parse default configuration file
+  --config-prepend=<string>  Prepend <string> to configuration
+  --config-append=<string>   Append <string> to configuration
+  --config-set=<string>      Set configuration data, overriding config file
+- add new command: dumpconfig
+- respect 'cachefile' setting in configuration (did anyone ever use this??)
+- add 'runscripts' configuration variable to (equivalent to --install-scripts)
+- dump readme and runscripts configuration in dumpConfig()
+- add 'makecommand' and 'addcommand' to config file to make prt-get use
+  another command than pkgmk and pkgadd
+
+* 0.5.5p1       23.03.2004  Johannes Winkelmann
+- Let Pkgfile's dependencies take precedence over deplist
+
+* 0.5.5		05.03.2004  Johannes Winkelmann
+- Add new configuration option: depfile
+- add way to use external dependency file
+- Add some missing headers for compilation with gcc 2.95
+- update bash completion for isinst
+- add deptree command (--all for all deps)
+
+* 0.5.4p2       17.11.2003  Johannes Winkelmann
+- fix bug in "at least X arguments" after getting several complaints
+
+* 0.5.4p1       30.10.2003  Johannes Winkelmann
+- fix message when called without argument
+- Fix duplicate prtdir ignoring error (when using filters)
+
+* 0.5.4         04.10.2003  Johannes Winkelmann
+- introduce symbolic return values
+- code: introduce generic argument number checks
+- (re)introduce depinst command
+- fix problem with prt-get fsearch: symlink'ed files are found as well
+- print output while logging (Patch from Logan)
+- redirect output of InstallTransaction::installPackage to log file
+- add %v (version) and %r (release) patterns to the log file name
+- fix typo in man page: %d in printf used for desc and deps
+- check for pre-install and post-install
+  - store in cache (-> cache version update)
+  - show in prt-get info
+  - enable in prt-get printf, using %E (prE) and %O (pOst)
+
+* 0.5.3p2       29.09.2003  Johannes Winkelmann
+- Fix little bug in prt-get printf: don't print out empty lines (even if
+  there's a newline char)
+
+* 0.5.3p1       25.09.2003  Johannes Winkelmann
+- Adapt new patch naming
+- Be more clever when calling prt-get diff with a filter
+
+* 0.5.3         01.09.2003  Johannes Winkelmann
+- Add 'remove' feature
+- implement pre/post install execution
+- prt-get diff doesn't display locked; use --all if you want them
+- Fix bug in repository initialization when pkgdirs were specified twice
+
+* 0.5.2 not used ;-)
+
+* 0.5.1a	08.08.2003  Johannes Winkelmann
+- Fix for gcc 3.3
+
+* 0.5.1		09.07.2003  Johannes Winkelmann
+- use PKGMK_PACKAGE_DIR
+
+* 0.5.0		22.06.2003  Johannes Winkelmann
+- update to fit new CLC project
+(pre3)
+- made bash completion work with ls, cat and edit
+(pre2)
+- sort ls output
+(pre1)
+- introduced new commands: ls, cat, edit
+- fixed an empty error message in argparser
+
+* 0.4.4c        08.05.2003  Johannes Winkelmann
+- Fixed an ugly bug: no error messages shown when logging enabled
+
+
+* 0.4.4b        08.05.2003  Johannes Winkelmann
+- Change mode of created directories from 0711 to 0755
+
+* 0.4.4a        05.05.2003  Johannes Winkelmann
+- Change $PKGDEST to $PACKAGE_DIR
+
+* 0.4.4         01.05.2003  Johannes Winkelmann
+- add support for PKGDEST
+- add lock/unlock and listlocked commands
+- better parsing of arguments
+- small update of the argument parser
+
+* Reimported after disk crash; 07.04.2003
+
+* 0.4.3         18.02.2003  Johannes Winkelmann
+- fixed bug in dependent: it split the list wrongly
+- new command: fsearch: search for file names in ports tree 
+- speed fix in Package: don't load() in name() and path()
+- cosmetical changes to the help screen
+
+* 0.4.2a        06.02.2003  Johannes Winkelmann
+- fixed bug in dependent: it looked just for a substring, so pkgconfig whould
+  also be a match for 'dependent gconf', as it contains gconf...
+
+* 0.4.2         06.02.2003  Johannes Winkelmann
+- Fixed a segfault when no pkg database file available
+
+* 0.4.1         20.01.2003  Johannes Winkelmann
+- added small speed fix to printDiff
+- added missing include in configuration.cpp
+- enable clc ports by default
+- added misc dir to DIST
+
+* 0.4.0pre2     14.01.2003  Johannes Winkelmann
+- fixed segfault when no m_currentTransaction
+
+* 0.4.0pre2     13.01.2003  Johannes Winkelmann
+- fixed --listall -> --all switch on help page
+- completed SignalDispatcher
+- made PrtGet a SubClass of SignalHandler
+- feedback on Ctrl-C
+- fixed performance problems by not copying lists
+
+* 0.4.0pre1     13.01.2003  Johannes Winkelmann
+- update man page
+
+
+* 0.4.0alpha4   13.01.2003  Johannes Winkelmann
+- removed find command
+- list can have a wildcard filter
+- renamed --listall switch to --all for dependent
+- implemented wildcards for listinst
+
+* 0.4.0alpha3   13.01.2003  Johannes Winkelmann
+- added --listall switch for dependent; don't show only installed ports
+- corrected help once more
+- added LockFile class
+- added check for Pkgfile in Port directory
+- added expandWildcard*() methods
+- enabled wildcards for diff 
+- implemented 'current' command
+
+* 0.4.0alpha2   05.01.2003  Johannes Winkelmann
+- added --filter="..." option used in printf
+- added sysup command (refactoring required)
+- updated help output
+- added signal dispatcher
+- new cache file format (newline separated)
+- cache file versioning
+- support for maintainer and packager in info and printf
+- support for hasReadme in printf
+- fixed bug in Pkgfile parser (whitespaces before version, name and rev)
+- better format for prt-get help 
+
+* 0.4.0alpha1   04.01.2003  Johannes Winkelmann
+- added find command (searching using wildcards),
+- Repository::getMatchingPackages() (wildcard match)
+- added data object for package
+
+
+* 0.3.5c    28.12.2002  Johannes Winkelmann
+- fixed bug: pkgadd was called even if pkgmk failed... there since 0.3.4
+
+* 0.3.5b    28.12.2002  Johannes Winkelmann
+- fixed bug in writeCache()
+
+* 0.3.5a    23.12.2002  Johannes Winkelmann
+- dependent -> help page
+
+
+* 0.3.5     04.12.2002  Johannes Winkelmann
+- added readme command
+- info shows whether there is a README file
+- added readme info to cache file (-> new format)
+- added (README) to install/update output
+- fixed a memory leak
+- introduced configuration object
+- exchanged result printing order ("Packages already installed" before
+  "Packages installed now"
+- added dependent command: show which packages depend on argument
+- corrected ugly copy and paste errors in "<command> takes only one arg..."
+- added misc/prt-edit (not installed)
+- new manual format, not included anymore
+
+
+* 0.3.4c    02.12.2002  Johannes Winkelmann
+- corrected typo in manual
+- added logging options to default prt-get.conf
+- added --sort option for printf
+
+* 0.3.4b    02.12.2002  Johannes Winkelmann
+- printf replaces \t and \n
+- small change in StringHelper::replaceAll()
+- listinst -vv prints description
+- listinst documentation update
+- --log doc update
+- cleanups (using StringHelper::replaceAll())
+- add bash completion file
+
+* 0.3.4a    30.11.2002  Johannes Winkelmann
+- small change in printf (%i expands to "diff")
+
+* 0.3.4     10.11.2002  Johannes Winkelmann
+- implemented new printf function
+- corrected usage output (removed "," characters)
+- added StringHelper::replaceAll(..)
+- log feature
+- added %p in logfile
+
+* 0.3.3     27.08.2002  Johannes Winkelmann
+- implemented a returnValue() method in PrtGet
+- prt-get isinst no longer returns "... is not installed" to be more
+  consistent with "pkginfo -i|grep ...", but returns 1 when a package is not
+  installed (1 = general error).
+- allow dependencies to be commented out when starting with #. THINK ABOUT
+  THIS SOME MORE
+
+* 0.3.2     15.07.2002  Johannes Winkelmann
+- changed example prt-get.conf again
+- added another example to the manual
+- added doxygen api documentation 
+- various code cleanups
+- output fix for prt-get diff (title not printed if no difference)
+- added tests for process and stringhelper class
+- added _very_ simple version checking in prt-get diff
+- return values on errors (=1)
+- no output for prt-get isinst if package not installed (to be consistent with
+  pkginfo)
+- gcc 3.2 fixes
+
+
+* 0.3.1a    15.07.2002  Johannes Winkelmann
+- changed example prt-get.conf to meet the new format...
+
+* 0.3.1     13.07.2002  Johannes Winkelmann
+- Fixed some conditions where Valgrind reported errors
+
+* 0.3.1pre2 10.07.2002  Johannes Winkelmann
+- Fixed another bug in the process execution
+- proper implementation of process execution :-)
+- improved StringHelper::split()
+
+* 0.3.1pre1 08.07.2002  Johannes Winkelmann
+- listinst
+- new config file format (can use alternate location for cache)
+- removed depinst skeletion 
+
+* 0.3.0     05.07.2002  Johannes Winkelmann
+- added cache feature
+- moved string functions to stringhelper
+- Makefile.am includes code to create a symlink from prt-get to prt-cache
+- If prt-get is called as prt-cache, it uses the caching all the time
+- added man page for prt-cache
+- added package filter functionality in prt-get-conf
+- added man page for prt-get.conf
+- comments are removed in prt-get.conf
+- added check whether cache is outdated (config file changed after cache
+  generated)
+- added check for 'prt-get diff <packagelist>' that the packages listed
+  are really installed
+- added path command
+- print errors to stderr
+- always exit( -1 ) on error
+
+* 0.3.0pre2 03.07.2002  Johannes Winkelmann
+- Fixed bug when release or version had a comment on the same line
+
+* 0.3.0pre1 02.07.2002  Johannes Winkelman
+- Changed format of TODO, so others can understand it as well :-)
+- added version command 
+
+* 0.2.9     01.07.2002  Johannes Winkelmann
+- If files are rejected during update, prt-get no longer says "update failed"
+- implemented dsearch feature (to search descriptions)
+- Fixed a bug in prt-get depends (empty listing instead of warning when
+  invalid package given)
+
+* 0.2.8     30.06.2002  Johannes Winkelmann
+- moved to autoconf/automake
+
+* 0.2.7     28.06.2002  Johannes Winkelmann
+- added a man page
+- adjusted message of install/update
+decided to go up to .7, as I made some errors in the release of .6
+
+
+* 0.2.6     28.06.2002  Johannes Winkelmann
+- added --test switch: doing no installation, just prints out the result
+- added quickdiff feature, printing out a list of installed packages to be
+  updated: use it for prt-get update `prt-get quickdiff`
+
+
+* 0.2.5     28.06.2002  Johannes Winkelmann
+- removed depinst feature (maybe reimplemented soon)
+- it is now possible to pass a list of arguments to 
+  prt-get install
+  prt-get depends/quickdep
+- implemented -v and -vv in prt-get list
+- implemented -v for prt-get search (show description as well)
+- lazy initialization of repository -> speed improvement 
+- removed --args switch, added --margs and --aargs switches for pkgmk and
+  pkgadd respectively
+
+* 0.2.4     24.06.2002  Johannes Winkelmann
+- fixed segfault when having cyclic dependecies
+
+* 0.2.3     24.06.2002  Johannes Winkelmann
+- added --config=<conffile> option
+- added prt-get update feature
+- added prt-get quickdep feature
+- added prt-get diff feature
+
+* 0.2.2     24.06.2002  Johannes Winkelmann
+- Fixed segfault in depends
+
+* 0.2.1     23.06.2002  Johannes Winkelmann
+- added config file /etc/prt-get.conf
+
+* 0.2       22.06.2002  Johannes Winkelmann
+- C++ port
+
+* 0.1.1     22.06.2002  Johannes Winkelmann
+- moved install to InstallTransaction
+
+* 0.1       21.06.2002  Johannes Winkelmann
+- First release

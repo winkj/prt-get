@@ -1,0 +1,18 @@
+Thanks go to the following persons for valuable feedback/bug reports:
+    * Olle Gustafsson
+    * Daniel Mueller
+    * Juergen Daubert
+    * Mike Toggweiler
+    * Robert McMeekin
+    * Michael Ablassmeier
+    * Roger Kislig
+    * Sven Dahl
+    * Matt Housh
+    * Christoph Winkelmann
+    * Han Boetes
+
+The following persons have contributed patches to prt-get's source code:
+    * Logan Ingalls
+
+Not to forget debian for the inspiration for a *-get tool and the those
+on the crux mailing list writing about their ideas and needs.

@@ -1,0 +1,56 @@
+.\" man page for prt-cache
+.\" Johannes Winkelmann, jw@tks6.net
+
+.PU
+.TH prt-cache 8
+.SH "NAME"
+.LP 
+prt\-cache \- call prt\-get using a cache file as a data source
+.SH "SYNOPSIS"
+.B prt\-cache command [options] <arguments>
+.br 
+.SH "DESCRIPTION"
+prt\-cache is a synonym for
+.B prt\-get --cache.
+It's perfectly the same as calling prt\-get --cache, just shorter. See
+.B man prt-get(8)
+for details on how to use prt-get
+
+.PP
+Even though there are almost restrictions on using prt-cache over prt-get,
+it's mostly recommended for the following commands:
+.B search, dsearch, list, info, depends, quickdep, diff, quickdiff 
+and 
+.B info.
+It won't work for the
+.B dup
+command.
+
+.PP
+Using 
+.B prt-cache isinst 
+is not recommended (really not!)
+
+.PP
+Note that if the cache is not up to date (and there's a newer port in the
+ports tree),
+.B prt-cache install
+and 
+.B prt-cache update
+will use the version from the ports tree anyway, so there's no real
+risk.
+
+.PP
+If you're using prt-cache, make sure to regenerate the cache by calling
+.B prt-get cache
+each time you make changes to the ports tree!
+
+.PP
+To create a cache, just invoke
+.B prt-get cache.
+Make sure you have the right permissions to do this
+
+.SH "AUTHORS"
+Johannes Winkelmann <jw@tks6.net>
+.SH "SEE ALSO"
+prt-get(8), pkgmk(8) pkgadd(8), ports(8)

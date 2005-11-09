@@ -1,0 +1,8 @@
+Q: Why are there no wildcards for install/update/grpinst
+A: Because you don't want it (dependencies)
+
+Q: Why is there no prt-get depinst?
+A:
+
+Q: Why is there no GUI or shared lib for/of prt-get?
+A:

@@ -1,0 +1,6 @@
+j2sdk: j2re
+lesstif: openmotif
+postfix: sendmail
+exim: sendmail
+qmail: sendmail
+masqmail: sendmail
