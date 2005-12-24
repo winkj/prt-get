@@ -158,7 +158,9 @@ void PrtGet::printUsage()
     cout << "  update  [opt] <port1 port2...>    update ports" << endl;
     cout << "  grpinst [opt] <port1 port2...>    install ports, stop on error"
          << endl;
-    cout << "  remove [opt] <port1 port2...>    remove ports"
+    cout << "  depinst [opt] <port1 port2...>    install ports and their dependencies"
+         << endl;
+    cout << "  remove [opt] <port1 port2...>     remove ports"
          << endl;
     cout << "          where opt can be:" << endl;
     cout << "                -f, -fi             force installation" << endl;
