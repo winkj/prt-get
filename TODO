@@ -1,3 +1,20 @@
+- use `eval $(fgrep -h 'PKGMK_PACKAGE_DIR=' $(which pkgmk) /etc/pkgmk.conf) && echo
+$PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR
+- store former information version first, and print before pkgadd:
+  "updating X from /usr/ports/Y: n -> n+m"
+- add update-footprint, update-md5sum commands (patch in trac)
+- allow dependency injection for sysup, with previews
+- prefer toolchain (patch in trac)
+- dependent --list-orphaned; should simplify pkgfoster
+
+==============================================================================
+
+
+
+
+
+
+
 
 - add support to "prefer higher" for certain packages ?
 
