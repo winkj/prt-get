@@ -1,3 +1,8 @@
+* 0.5.12	00.04.2006  Johannes Winkelmann
+- Fix compilation on OpenBSD
+- Show alias info in depends
+- don't install alias file and deplist
+
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'
 - initial regex support

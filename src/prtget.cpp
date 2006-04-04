@@ -1788,8 +1788,11 @@ void PrtGet::printDepsLevel(int indent, const Package* package)
     list<string> deps;
     StringHelper::split(package->dependencies(), ',', deps);
     list<string>::iterator it = deps.begin();
+    bool isAlias = false;
+    string aliasName = "";
+    
     for (; it != deps.end(); ++it) {
-        if ( m_pkgDB->isInstalled( *it ) ) {
+        if ( m_pkgDB->isInstalled( *it, true, &isAlias, &aliasName ) ) {
             cout << "[i] ";
         } else {
             cout << "[ ] ";
@@ -1798,6 +1801,9 @@ void PrtGet::printDepsLevel(int indent, const Package* package)
             cout << " ";
         }
         cout << *it;
+        if (isAlias) {
+            cout << " (provided by " << aliasName << ")";
+        }
         const Package* p = m_repo->getPackage( *it );
         if (p) {
             if  (p->dependencies().length() > 0) {
