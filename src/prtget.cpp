@@ -1467,8 +1467,7 @@ void PrtGet::setLock( bool lock )
     list<char*>::const_iterator it = args.begin();
     for ( ; it != args.end(); ++it ) {
         if ( lock ) {
-            const Package* p = m_repo->getPackage( *it );
-            if ( p ) {
+            if (m_pkgDB->isInstalled( *it )) {
                 if (!m_locker.lock( *it )) {
                     cerr << "Already locked: " << *it << endl;
                     m_returnValue = PG_GENERAL_ERROR;
@@ -1476,15 +1475,18 @@ void PrtGet::setLock( bool lock )
             } else {
                 cerr << "Package '" << *it << "' not found" << endl;
                 m_returnValue = PG_GENERAL_ERROR;
+                return;
             }
 
         } else {
             if ( !m_locker.unlock( *it ) ) {
                 cerr << "Not locked previously: " << *it << endl;
                 m_returnValue = PG_GENERAL_ERROR;
+                return;
             }
         }
     }
+								
     if (!m_locker.store()) {
         cerr << "Failed to write lock data" << endl;
         m_returnValue = PG_GENERAL_ERROR;
@@ -1672,6 +1674,10 @@ void PrtGet::remove()
             Process proc(command, args);
             if (m_parser->isTest() || proc.executeShell() == 0) {
                 removed.push_back(*it);
+                if (m_locker.isLocked(*it)) {
+                    m_locker.unlock(*it);
+                    m_locker.store();
+                }
             } else {
                 failed.push_back(*it);
             }
@@ -1790,7 +1796,7 @@ void PrtGet::printDepsLevel(int indent, const Package* package)
     list<string>::iterator it = deps.begin();
     bool isAlias = false;
     string aliasName = "";
-    
+
     for (; it != deps.end(); ++it) {
         if ( m_pkgDB->isInstalled( *it, true, &isAlias, &aliasName ) ) {
             cout << "[i] ";
@@ -1828,7 +1834,7 @@ void PrtGet::printDepsLevel(int indent, const Package* package)
 
 void PrtGet::dumpConfig()
 {
-    
+
     cout.setf( ios::left, ios::adjustfield );
     cout.width( 20 );
     cout.fill( ' ' );
@@ -1837,10 +1843,10 @@ void PrtGet::dumpConfig()
     cout.setf( ios::left, ios::adjustfield );
     cout.width( 20 );
     cout.fill( ' ' );
-    cout << "Ext. dep. file: " 
+    cout << "Ext. dep. file: "
          << Repository::EXTERNAL_DEPENDENCY_FILE << endl;
-    
-    
+
+
     if (!m_parser->noStdConfig()) {
         string fName = CONF_FILE;
         if ( m_parser->isAlternateConfigGiven() ) {

@@ -24,6 +24,8 @@ using namespace std;
  * - marked in prt-get diff
  * - not shown in prt-get quickdiff
  * - not updated in prt-get sysup
+ * 
+ * remember to call store!
  */
 class Locker
 {
@@ -44,7 +46,7 @@ private:
     vector<string> m_packages;
     static const string LOCKER_FILE;
     static const string LOCKER_FILE_PATH;
-    
+
     bool m_openFailed;
 };
 
