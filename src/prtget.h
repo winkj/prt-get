@@ -89,8 +89,6 @@ public:
 
     void dumpConfig();
 
-    bool greaterThan( const string& v1, const string& v2 );
-
     int returnValue() const;
 
     SignalHandler::HandlerResult handleSignal( int signal );
@@ -143,6 +141,7 @@ protected:
     void assertExactArgCount(int count);
     void argCountFailure(int count, const string& specifier);
     
+    bool greaterThan( const string& v1, const string& v2 );
     static bool printFile(const string& file);
 };
 
