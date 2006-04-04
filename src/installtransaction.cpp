@@ -109,21 +109,21 @@ InstallTransaction::install( const ArgParser* parser,
     if ( m_packages.empty() ) {
         return NO_PACKAGE_GIVEN;
     }
-    
+
     list<string> ignoredPackages;
     StringHelper::split(parser->ignore(), ',', ignoredPackages);
 
     list< pair<string, const Package*> >::iterator it = m_packages.begin();
     for ( ; it != m_packages.end(); ++it ) {
         const Package* package = it->second;
-        
-        if (find(ignoredPackages.begin(), 
-                 ignoredPackages.end(), 
+
+        if (find(ignoredPackages.begin(),
+                 ignoredPackages.end(),
                  it->first) != ignoredPackages.end() ) {
             m_ignoredPackages.push_back(it->first);
             continue;
         }
-        
+
         if ( package == NULL ) {
             m_missingPackages.push_back( make_pair( it->first, string("") ) );
             if ( group ) {
@@ -190,8 +190,10 @@ InstallTransaction::installPackage( const Package* package,
 #endif
 
     int fdlog = -1;
+    string logFile = "";
+    
     if ( m_config->writeLog() ) {
-        string logFile = m_config->logFilePattern();
+        logFile = m_config->logFilePattern();
         if ( logFile == "" ) {
             return NO_LOG_FILE;
         }
@@ -344,6 +346,11 @@ InstallTransaction::installPackage( const Package* package,
 
         // Close logfile
         close ( fdlog );
+        
+        if (m_config->removeLogOnSuccess() && !m_config->appendLog() && 
+            result == SUCCESS) {
+            unlink(logFile.c_str());
+        }
     }
     return result;
 }

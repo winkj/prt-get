@@ -29,6 +29,7 @@ public:
 
     bool writeLog() const;
     bool appendLog() const;
+    bool removeLogOnSuccess() const;
     std::string logFilePattern() const;
 
     const std::list< std::pair<std::string, std::string> >& rootList() const;
@@ -64,6 +65,7 @@ private:
     std::string m_logFilePattern;
     bool m_writeLog;
     bool m_appendLog;
+    bool m_removeLogOnSuccess;
 
     ReadmeMode m_readmeMode;
 

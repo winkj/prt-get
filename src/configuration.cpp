@@ -26,6 +26,7 @@ Configuration::Configuration( const std::string& configFile,
       m_parser( parser ),
       m_writeLog( false ),
       m_appendLog( false ),
+      m_removeLogOnSuccess( false ),
       m_logFilePattern( "" ),
       m_cacheFile( "" ),
       m_readmeMode( VERBOSE_README ),
@@ -74,6 +75,11 @@ bool Configuration::writeLog() const
 bool Configuration::appendLog() const
 {
     return m_appendLog;
+}
+
+bool Configuration::removeLogOnSuccess() const
+{
+    return m_removeLogOnSuccess;
 }
 
 string Configuration::logFilePattern() const
@@ -153,6 +159,11 @@ void Configuration::parseLine(const string& line, bool prepend)
         s = stripWhiteSpace( s.replace( 0, 7, "" ) );
         if ( s == "append" ) {
             m_appendLog = true;
+        }
+    } else if ( startwith_nocase( s, "rmlog_on_success" ) ) {
+        s = stripWhiteSpace( s.replace( 0, 16, "" ) );
+        if ( s == "yes" ) {
+            m_removeLogOnSuccess = true;
         }
     } else if ( startwith_nocase( s, "readme" ) ) {
         s = stripWhiteSpace( s.replace( 0, 6, "" ) );
