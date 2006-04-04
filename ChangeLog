@@ -4,6 +4,7 @@
 - don't install alias file and deplist
 - unlock ports on remove
 - fix lock: previously locking would only work for ports in the ports tree
+- allow to remove log files of successful builds
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'

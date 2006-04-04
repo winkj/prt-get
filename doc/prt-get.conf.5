@@ -110,6 +110,9 @@ The log options are
 which can be set to 'enabled' or 'disabled'
 .B logmode
 which can be set to 'append' or 'overwrite'
+.B rmlog_on_success
+which can be set to 'yes' or 'no'; when set to yes, log files of 
+successful builds will be removed
 .B logfile
 which represent the file path. All occurances of %n in logfile are
 replaced with the port name and all occurances of  %p are
@@ -117,7 +120,7 @@ replaced with the port's path, e.g. for port gcc in base, %p would be
 .B /usr/base
 and %n
 .B gcc.
-This allows you to have separate log files per port. 
+This allows you to have separate log files per port.
 
 .LP
 If the readme option is set to something different than 'disabled',
