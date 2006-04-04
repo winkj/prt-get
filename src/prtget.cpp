@@ -1212,6 +1212,25 @@ void PrtGet::readme()
     const Package* p = m_repo->getPackage( arg );
     if ( p ) {
         string file = p->path() + "/" + p->name() + "/README";
+        printFile(file);
+    } else {
+        cerr << "Package '" << arg << "' not found" << endl;
+        m_returnValue = PG_GENERAL_ERROR;
+        return;
+    }
+}
+
+bool PrtGet::printFile(const string& file)
+{
+    if (!File::fileExists(file)) {
+        return false;
+    }
+    
+    char* pager = getenv("PAGER");
+    if (pager) {
+        Process proc(pager, file);
+        proc.executeShell();
+    } else {    
         FILE* fp = fopen( file.c_str(), "r" );
         char buf[255];
         if ( fp ) {
@@ -1220,14 +1239,10 @@ void PrtGet::readme()
             }
             fclose( fp );
         }
-
-    } else {
-        cerr << "Package '" << arg << "' not found" << endl;
-        m_returnValue = PG_GENERAL_ERROR;
-        return;
     }
+    
+    return true;
 }
-
 
 void PrtGet::printDependendent()
 {
@@ -1623,19 +1638,11 @@ void PrtGet::cat()
             fileName = *it;
         }
         string file = p->path() + "/" + p->name() + "/" + fileName;
-        FILE* fp = fopen( file.c_str(), "r" );
-        char buf[255];
-        if ( fp ) {
-            while ( fgets( buf, 255, fp ) ) {
-                cout << buf;
-            }
-            fclose( fp );
-        } else {
+        if (!printFile(file)) {
             cerr << "File '" << *it << "' not found" << endl;
             m_returnValue = PG_GENERAL_ERROR;
             return;
         }
-
     } else {
         cerr << "Package '" << arg << "' not found" << endl;
         m_returnValue = PG_GENERAL_ERROR;

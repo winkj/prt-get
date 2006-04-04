@@ -190,7 +190,7 @@ Print the path of a port
 
 .TP 
 .B readme <port>
-Print the port's README file if it exists
+Print the port's README file if it exists; if set, uses $PAGER
 
 .TP 
 .B depends <package1> [<package2> ...]
@@ -339,7 +339,7 @@ Prints out a listing of the port's directory
 
 .TP
 .B cat <package> [<file>]
-Prints out the file to stdout. If <file> is not specified, 'Pkgfile' is used
+Prints out the file to stdout. If <file> is not specified, 'Pkgfile' is used. If set, uses $PAGER
 
 .TP
 .B edit <package> <file>

@@ -7,6 +7,7 @@
 - allow to remove log files of successful builds
 - print update summary right before running the addcommand
 - print full add command and PACKAGE_DIR info when using install/update -v
+- Make 'cat' and 'readme' use $PAGER if set
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'

@@ -128,7 +128,7 @@ protected:
     string m_cacheFile;
 
     int m_returnValue;
-    
+
     bool m_useRegex;
 
     /*! Name of default configuration file */
@@ -142,7 +142,8 @@ protected:
     void assertMaxArgCount(int count);
     void assertExactArgCount(int count);
     void argCountFailure(int count, const string& specifier);
-
+    
+    static bool printFile(const string& file);
 };
 
 #endif /* _PRTGET_H_ */
