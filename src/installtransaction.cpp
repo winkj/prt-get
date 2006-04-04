@@ -268,8 +268,10 @@ InstallTransaction::installPackage( const Package* package,
         if ( pkgdest != "" ) {
             // TODO: don't manipulate pkgdir
             pkgdir = pkgdest;
-            string message = "Using PKGMK_PACKAGE_DIR: " + pkgdir;
-            cout << message << endl;
+            string message = "prt-get: Using PKGMK_PACKAGE_DIR: " + pkgdir;
+            if (parser->verbose() > 0) {
+                cout << message << endl;
+            }
             if ( m_config->writeLog() ) {
                 write( fdlog, message.c_str(), message.length() );
                 write( fdlog, "\n", 1 );
@@ -307,10 +309,27 @@ InstallTransaction::installPackage( const Package* package,
                 commandName = "prt-cache";
             }
 
-            string message = commandName + ": " + cmd + " " + args;
-            cout << message << endl;
+            // - inform the user about what's happening
+            string fullCommand = commandName + ": " + cmd + " " + args;
+            string summary;
+            if (update) {
+                summary = commandName + ": " + "updating " + package->name() +
+                    " from " + m_pkgDB->getPackageVersion(package->name()) +
+                    " to " + package->version() + "-" + package->release();
+            } else {
+                summary = commandName + ": " + "installing " + 
+                    package->name() + " " +
+                    package->version() + "-" + package->release();
+            }                       
+            
+            // - print and log
+            cout << summary << endl;
+            if (parser->verbose() > 0) {
+                cout << fullCommand << endl;
+            }
             if ( m_config->writeLog() ) {
-                write( fdlog, message.c_str(), message.length() );
+                write( fdlog, summary.c_str(), summary.length() );
+                write( fdlog, fullCommand.c_str(), fullCommand.length() );
                 write( fdlog, "\n", 1 );
             }
 

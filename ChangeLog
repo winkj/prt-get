@@ -5,6 +5,8 @@
 - unlock ports on remove
 - fix lock: previously locking would only work for ports in the ports tree
 - allow to remove log files of successful builds
+- print update summary right before running the addcommand
+- print full add command and PACKAGE_DIR info when using install/update -v
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'
