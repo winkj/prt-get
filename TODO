@@ -4,6 +4,8 @@ $PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR
 - allow dependency injection for sysup, with previews
 - prefer toolchain (patch in trac)
 - dependent --list-orphaned; should simplify pkgfoster
+- logging: check for non-root owned symlinks
+- logging: reject relative logfile names
 
 ==============================================================================
 
@@ -45,7 +47,6 @@ config: go through additional configuration options; add and/or replace
 
 - better reports (installed/failed/not even tried to install)
 [ ] message log for prt-get messages ?
-[ ] timestamps for the log file 
 [ ] --quiet mode; suppress output of pkgmk and pkgadd
 [ ] prt-get diff stats: "100 Packages with differences"
 

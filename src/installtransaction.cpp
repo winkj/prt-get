@@ -18,6 +18,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <time.h>
 using namespace std;
 
 
@@ -191,7 +192,13 @@ InstallTransaction::installPackage( const Package* package,
 
     int fdlog = -1;
     string logFile = "";
+    string timestamp;
     
+    string commandName = "prt-get";
+    if ( parser->wasCalledAsPrtCached() ) {
+        commandName = "prt-cache";
+    }
+
     if ( m_config->writeLog() ) {
         logFile = m_config->logFilePattern();
         if ( logFile == "" ) {
@@ -228,6 +235,12 @@ InstallTransaction::installPackage( const Package* package,
         if ( fdlog == -1 ) {
             return LOG_FILE_FAILURE;
         }
+
+        time_t startTime;
+        time(&startTime);
+        timestamp = ctime(&startTime);
+        timestamp = commandName + ": starting build " + timestamp;
+        write( fdlog, timestamp.c_str(), timestamp.length());
     }
 
     string pkgdir = package->path() + "/" + package->name();
@@ -304,10 +317,6 @@ InstallTransaction::installPackage( const Package* package,
                 package->version() + "-" +
                 package->release() + ".pkg.tar.gz";
 
-            string commandName = "prt-get";
-            if ( parser->wasCalledAsPrtCached() ) {
-                commandName = "prt-cache";
-            }
 
             // - inform the user about what's happening
             string fullCommand = commandName + ": " + cmd + " " + args;
@@ -328,8 +337,16 @@ InstallTransaction::installPackage( const Package* package,
                 cout << fullCommand << endl;
             }
             if ( m_config->writeLog() ) {
+                time_t endTime;
+                time(&endTime);
+                timestamp = ctime(&endTime);
+                timestamp = commandName + ": build done " + timestamp;
+
                 write( fdlog, summary.c_str(), summary.length() );
+                write( fdlog, "\n", 1 );
                 write( fdlog, fullCommand.c_str(), fullCommand.length() );
+                write( fdlog, "\n", 1 );
+                write( fdlog, timestamp.c_str(), timestamp.length());
                 write( fdlog, "\n", 1 );
             }
 

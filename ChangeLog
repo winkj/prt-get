@@ -1,4 +1,5 @@
 * 0.5.12	00.04.2006  Johannes Winkelmann
+- Add 'depinst' in 'help' (thanks Simone)
 - Fix compilation on OpenBSD
 - Show alias info in depends
 - don't install alias file and deplist
@@ -9,6 +10,7 @@
 - print full add command and PACKAGE_DIR info when using install/update -v
 - Make 'cat' and 'readme' use $PAGER if set
 - update default prt-get.conf to reflect new port hierarchy (core/opt/contrib)
+- add timestamps to log files
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'
