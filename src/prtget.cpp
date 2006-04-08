@@ -1225,12 +1225,12 @@ bool PrtGet::printFile(const string& file)
     if (!File::fileExists(file)) {
         return false;
     }
-    
+
     char* pager = getenv("PAGER");
     if (pager) {
         Process proc(pager, file);
         proc.executeShell();
-    } else {    
+    } else {
         FILE* fp = fopen( file.c_str(), "r" );
         char buf[255];
         if ( fp ) {
@@ -1240,7 +1240,7 @@ bool PrtGet::printFile(const string& file)
             fclose( fp );
         }
     }
-    
+
     return true;
 }
 

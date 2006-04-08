@@ -11,6 +11,7 @@
 - Make 'cat' and 'readme' use $PAGER if set
 - update default prt-get.conf to reflect new port hierarchy (core/opt/contrib)
 - add timestamps to log files
+- fix aliasing bug introduce earlier in the .12 session (thanks Mark)
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'

@@ -55,7 +55,7 @@ bool PkgDB::isInstalled( const string& name,
     if ( !load() ) {
         return false;
     }
-
+    
     bool installed = m_packages.find( name ) != m_packages.end();
     if (!installed && useAlias) {
         string provider;
@@ -67,6 +67,10 @@ bool PkgDB::isInstalled( const string& name,
             if (installed && aliasOrignalName) {
                 *aliasOrignalName = provider;
             }
+        }
+    } else {
+        if (isAlias) {
+            *isAlias = false;
         }
     }
 
@@ -81,13 +85,13 @@ bool PkgDB::aliasExistsFor(const string& name, string& providerName) const
         map<string, string>::iterator it = m_aliases.begin();
         for (; it != m_aliases.end(); ++it) {
             StringHelper::split(it->second, ',',
-                                m_splitAliases[it->first]);            
+                                m_splitAliases[it->first]);
         }
     }
-    
+
     map<string, vector<string> >::iterator it = m_splitAliases.begin();
     for (; it != m_splitAliases.end(); ++it) {
-        if (find(it->second.begin(), it->second.end(), name) != 
+        if (find(it->second.begin(), it->second.end(), name) !=
             it->second.end()) {
             providerName = it->first;
             return true;
