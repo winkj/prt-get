@@ -121,7 +121,7 @@ const string& ArgParser::alternateConfigFile() const
 */
 bool ArgParser::parse()
 {
-    const int commandCount = 34;
+    const int commandCount = 35;
     string commands[commandCount] = { "list", "search", "dsearch",
                                       "info",
                                       "depends", "install", "depinst",
@@ -132,7 +132,8 @@ bool ArgParser::parse()
                                       "dependent", "sysup", "current",
                                       "fsearch", "lock", "unlock",
                                       "listlocked", "cat", "ls", "edit",
-                                      "remove", "deptree", "dumpconfig" };
+                                      "remove", "deptree", "dumpconfig",
+                                      "listorphans" };
 
     Type commandID[commandCount] = { LIST, SEARCH, DSEARCH, INFO,
                                      DEPENDS, INSTALL, DEPINST,
@@ -143,7 +144,7 @@ bool ArgParser::parse()
                                      DEPENDENT, SYSUP, CURRENT,
                                      FSEARCH, LOCK, UNLOCK, LISTLOCKED,
                                      CAT, LS, EDIT, REMOVE, DEPTREE,
-                                     DUMPCONFIG };
+                                     DUMPCONFIG, LISTORPHANS };
     if ( m_argc < 2 ) {
         return false;
     }

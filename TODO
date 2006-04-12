@@ -5,7 +5,6 @@ $PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR
 - add update-footprint, update-md5sum commands (patch in trac)
 - allow dependency injection for sysup, with previews
 - prefer toolchain (patch in trac)
-- dependent --list-orphaned; should simplify pkgfoster
 - logging: check for non-root owned symlinks
 - logging: reject relative logfile names
 

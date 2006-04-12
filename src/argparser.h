@@ -37,7 +37,7 @@ public:
                 LISTINST, PRINTF, README, DEPENDENT, SYSUP,
                 CURRENT, FSEARCH, LOCK, UNLOCK, LISTLOCKED,
                 CAT, LS, EDIT, REMOVE,
-                DEPTREE, DUMPCONFIG };
+                DEPTREE, DUMPCONFIG, LISTORPHANS };
 
     bool isCommandGiven() const;
     bool isForced() const;

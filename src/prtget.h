@@ -70,6 +70,7 @@ public:
     void printDependent();
     void printDiff();
     void printQuickDiff();
+    void listOrphans();
 
     void createCache();
 

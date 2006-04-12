@@ -160,6 +160,9 @@ int main( int argc, char** argv )
         case ArgParser::DUMPCONFIG:
             prtGet.dumpConfig();
             break;
+        case ArgParser::LISTORPHANS:
+            prtGet.listOrphans();
+            break;
         default:
             cerr << "unknown command" << endl;
             break;

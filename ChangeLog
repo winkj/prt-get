@@ -13,6 +13,7 @@
 - add timestamps to log files
 - fix aliasing bug introduce earlier in the .12 session (thanks Mark)
 - add --recursive and --tree for dependent
+- add listorphans command
 
 * 0.5.11	29.05.2005  Johannes Winkelmann
 - add --path to 'ls'

@@ -107,6 +107,8 @@ void PrtGet::printUsage()
          << endl;
     cout << "  listinst [<filter>]        show a list of installed ports"
          << endl;
+    cout << "  listorphans                list of ports with no "
+         << "packages depending on them" << endl;
     cout << "  info     <port>            show info about a port" << endl;
     cout << "  path     <port>            show path of a port" << endl;
     cout << "  readme   <port>            show a port's readme file "
@@ -145,6 +147,9 @@ void PrtGet::printUsage()
     cout << "          where opt can be:" << endl;
     cout << "                --all    list all dependent packages, not "
          << "only installed" << endl;
+    cout << "                --recursive    print recursive listing" << endl;
+    cout << "                --true         print recursive tree listing" 
+         << endl;
 
     cout << "\nSEARCHING" << endl;
     cout << "  search  <expr>     show port names containing 'expr'" << endl;
@@ -1280,8 +1285,17 @@ void PrtGet::printDependent(const string& dep, int level)
             }
         }
     }
-    
-    // prepared for recursive search
+
+    // - there are two modes, tree and non-tree recursive mode; in
+    // tree mode, packages are shown multiple times, in non tree
+    // recursive mode they're only printed the first time; this is not
+    // necessarily optimal for rebuilding:
+    //
+    // a -> b -> d
+    //  \     ^
+    //   > c /
+    // 
+    // trying to rebuild 'd' before 'c' might possibly fail
     string indent = "";
     if (m_parser->printTree()) {
         for (int i = 0; i < level; ++i) {
@@ -1317,6 +1331,48 @@ void PrtGet::printDependent(const string& dep, int level)
         }
     }
 }
+
+void PrtGet::listOrphans()
+{
+    initRepo();
+    map<string, string> installed = m_pkgDB->installedPackages();
+    map<string, bool> required;
+    map<string, string>::iterator it = installed.begin();
+    
+    for (; it != installed.end(); ++it) {
+        list<string> tokens;
+        const Package* p = m_repo->getPackage(it->first);
+        if (p) {
+            StringHelper::split( p->dependencies(), ',', tokens );
+            list<string>::iterator lit = tokens.begin();
+            for (; lit != tokens.end(); ++lit) {
+                required[*lit] = true;
+            }
+        }
+    }   
+    
+    // - we could store the package pointer in another map to avoid
+    // another getPackage lockup, but it seems better to optimized for
+    // memory since it's only used when called with -vv
+    
+    it = installed.begin();
+    for (; it != installed.end(); ++it) {
+        if (!required[it->first]) {
+            cout << it->first;
+            if ( m_parser->verbose() > 0 ) {
+                cout << " " << it->second;
+            }
+            if ( m_parser->verbose() > 1 ) {
+                const Package* p = m_repo->getPackage(it->first);
+                if (p) {
+                    cout << ":  " << p->description();
+                }
+            }
+            cout << endl;
+        }
+    }
+}
+
 
 void PrtGet::warnPackageNotFound(InstallTransaction& transaction)
 {
