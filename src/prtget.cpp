@@ -1250,7 +1250,13 @@ void PrtGet::printDependent()
 
     initRepo();
     string arg = *(m_parser->otherArgs().begin());
-    printDependent(arg, 0);
+    
+    if (m_parser) {
+        cout << arg << endl;
+        printDependent(arg, 2);
+    } else {
+        printDependent(arg, 0);
+    }   
 }
     
 void PrtGet::printDependent(const string& dep, int level)
