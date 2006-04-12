@@ -67,7 +67,7 @@ public:
     void current();
     void printDepends( bool simpleListing=false );
     void printDependTree();
-    void printDependendent();
+    void printDependent();
     void printDiff();
     void printQuickDiff();
 
@@ -96,6 +96,8 @@ public:
 protected:
 
     void printDepsLevel(int indent, const Package* package);
+    
+    void printDependent(const std::string& dep, int level);
 
     void executeTransaction( InstallTransaction& transaction,
                              bool update, bool group );
@@ -140,7 +142,7 @@ protected:
     void assertMaxArgCount(int count);
     void assertExactArgCount(int count);
     void argCountFailure(int count, const string& specifier);
-    
+
     bool greaterThan( const string& v1, const string& v2 );
     static bool printFile(const string& file);
 };

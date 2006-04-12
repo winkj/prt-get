@@ -209,9 +209,11 @@ to make an install including dependencies
 .TP 
 .B dependent <package>
 print a list of package which depend on
-.B package. 
-Only list direct dependencies. Usually shows dependent packages which
-are installed. To see all dependencies, add the --all switch
+.B package.
+ 
+Usually shows dependent packages which are installed. To see all dependencies,
+add the --all switch; use --recursive to get a recursive list (without
+duplication), and --tree to get a nicely indented one
 
 .TP 
 .B deptree <package>

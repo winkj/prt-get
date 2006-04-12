@@ -57,6 +57,8 @@ public:
     bool strictDiff() const;
     bool useRegex() const;
     bool fullPath() const;
+    bool recursive() const;
+    bool printTree() const;
 
     const string& alternateConfigFile() const;
     const string& pkgmkArgs() const;
@@ -106,6 +108,9 @@ private:
     bool m_strictDiff;
     bool m_useRegex;
     bool m_fullPath;
+
+    bool m_recursive;
+    bool m_printTree;
 
     string m_alternateConfigFile;
     string m_pkgmkArgs;

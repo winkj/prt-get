@@ -1244,37 +1244,58 @@ bool PrtGet::printFile(const string& file)
     return true;
 }
 
-void PrtGet::printDependendent()
+void PrtGet::printDependent()
 {
     assertExactArgCount(1);
 
     initRepo();
     string arg = *(m_parser->otherArgs().begin());
+    printDependent(arg, 0);
+}
+    
+void PrtGet::printDependent(const string& dep, int level)
+{
     map<string, Package*>::const_iterator it = m_repo->packages().begin();
+    static map<string, bool> shownMap;
 
     set<const Package*> dependent;
     for ( ; it != m_repo->packages().end(); ++it ) {
 
         // TODO: is the following line needed?
         const Package* p = it->second;
-        if ( p && p->dependencies().find( arg ) != string::npos ) {
+        if ( p && p->dependencies().find( dep ) != string::npos ) {
             list<string> tokens;
             StringHelper::split( p->dependencies(), ',', tokens );
             list<string>::iterator it = find( tokens.begin(),
                                               tokens.end(),
-                                              arg );
+                                              dep );
             if ( it != tokens.end() ) {
                 dependent.insert( p );
             }
         }
     }
-
+    
     // prepared for recursive search
+    string indent = "";
+    if (m_parser->printTree()) {
+        for (int i = 0; i < level; ++i) {
+            indent += " ";
+        }
+    }
     set<const Package*>::iterator it2 = dependent.begin();
     for ( ; it2 != dependent.end(); ++it2 ) {
         const Package* p = *it2;
+        
+        if (m_parser->recursive() && !m_parser->printTree()) {
+            if (shownMap[p->name()]) {
+                continue;
+            }
+            shownMap[p->name()] = true;
+        }
+                
         if ( m_parser->all() || m_pkgDB->isInstalled( p->name() ) ) {
-            cout << p->name();
+                        
+            cout << indent << p->name();
             if ( m_parser->verbose() > 0 ) {
                 cout << " " << p->version() << "-" << p->release();
             }
@@ -1283,6 +1304,10 @@ void PrtGet::printDependendent()
             }
 
             cout << endl;
+            
+            if (m_parser->recursive()) {
+                printDependent( p->name(), level+2 );
+            }
         }
     }
 }

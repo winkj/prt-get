@@ -26,7 +26,7 @@ int main( int argc, char** argv )
                  << endl;
         } else if ( !argParser.isCommandGiven() ) {
             if (argParser.commandName() != "") {
-                cerr << "prt-get: Unknown command '" 
+                cerr << "prt-get: Unknown command '"
                      << argParser.commandName() << "'. "
                      << "try prt-get help for more information" << endl;
             } else {
@@ -122,7 +122,7 @@ int main( int argc, char** argv )
             prtGet.readme();
             break;
         case ArgParser::DEPENDENT:
-            prtGet.printDependendent();
+            prtGet.printDependent();
             break;
         case ArgParser::SYSUP:
             prtGet.sysup();
