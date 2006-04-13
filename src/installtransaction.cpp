@@ -322,9 +322,15 @@ InstallTransaction::installPackage( const Package* package,
             string fullCommand = commandName + ": " + cmd + " " + args;
             string summary;
             if (update) {
-                summary = commandName + ": " + "updating " + package->name() +
-                    " from " + m_pkgDB->getPackageVersion(package->name()) +
-                    " to " + package->version() + "-" + package->release();
+                string from = m_pkgDB->getPackageVersion(package->name());
+                string to = package->version() + "-" + package->release();
+                if (from ==  to) {
+                    summary = commandName + ": " + "reinstalling " + 
+                        package->name() + " " + to;
+                } else {
+                    summary = commandName + ": " + "updating " + 
+                        package->name() + " from " + from + " to " + to;
+                }
             } else {
                 summary = commandName + ": " + "installing " + 
                     package->name() + " " +
