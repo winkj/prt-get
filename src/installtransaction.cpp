@@ -193,11 +193,22 @@ InstallTransaction::installPackage( const Package* package,
     int fdlog = -1;
     string logFile = "";
     string timestamp;
-    
+
     string commandName = "prt-get";
     if ( parser->wasCalledAsPrtCached() ) {
         commandName = "prt-cache";
     }
+
+    // - initial information about the package to be build
+    string message;
+    message = commandName + ": ";
+    if (update) {
+        message += "updating ";
+    } else {
+        message += "installing ";
+    }
+    message += package->path() + "/" + package->name();
+    cout << message << endl;
 
     if ( m_config->writeLog() ) {
         logFile = m_config->logFilePattern();
@@ -235,6 +246,9 @@ InstallTransaction::installPackage( const Package* package,
         if ( fdlog == -1 ) {
             return LOG_FILE_FAILURE;
         }
+        
+        write( fdlog, message.c_str(), message.length());
+        write( fdlog, "\n", 1);
 
         time_t startTime;
         time(&startTime);
@@ -325,18 +339,18 @@ InstallTransaction::installPackage( const Package* package,
                 string from = m_pkgDB->getPackageVersion(package->name());
                 string to = package->version() + "-" + package->release();
                 if (from ==  to) {
-                    summary = commandName + ": " + "reinstalling " + 
+                    summary = commandName + ": " + "reinstalling " +
                         package->name() + " " + to;
                 } else {
-                    summary = commandName + ": " + "updating " + 
+                    summary = commandName + ": " + "updating " +
                         package->name() + " from " + from + " to " + to;
                 }
             } else {
-                summary = commandName + ": " + "installing " + 
+                summary = commandName + ": " + "installing " +
                     package->name() + " " +
                     package->version() + "-" + package->release();
-            }                       
-            
+            }
+
             // - print and log
             cout << summary << endl;
             if (parser->verbose() > 0) {
@@ -388,8 +402,8 @@ InstallTransaction::installPackage( const Package* package,
 
         // Close logfile
         close ( fdlog );
-        
-        if (m_config->removeLogOnSuccess() && !m_config->appendLog() && 
+
+        if (m_config->removeLogOnSuccess() && !m_config->appendLog() &&
             result == SUCCESS) {
             unlink(logFile.c_str());
         }
