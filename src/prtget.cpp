@@ -148,7 +148,7 @@ void PrtGet::printUsage()
     cout << "                --all    list all dependent packages, not "
          << "only installed" << endl;
     cout << "                --recursive    print recursive listing" << endl;
-    cout << "                --true         print recursive tree listing" 
+    cout << "                --tree         print recursive tree listing" 
          << endl;
 
     cout << "\nSEARCHING" << endl;
