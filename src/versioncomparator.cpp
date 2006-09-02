@@ -88,11 +88,11 @@ COMP_RESULT compareVersions(const string& v1, const string& v2)
                         } else {
                             // smart guessing...
                             // leaving out 'test', 'pre' and 'rc'
-                            static const string versions = 
+                            static const string versions =
                                 "alpha beta gamma delta";
-                            string::size_type pos1 = 
+                            string::size_type pos1 =
                                 versions.find(subtokens1[k]);
-                            string::size_type pos2 = 
+                            string::size_type pos2 =
                                 versions.find(subtokens2[k]);
                             if (pos1 != string::npos && pos2 != string::npos) {
                                 if (pos1 < pos2) {
