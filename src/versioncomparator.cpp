@@ -67,19 +67,19 @@ COMP_RESULT compareVersions(const string& v1, const string& v2)
                 tokenizeMixed(tokens2[j], subtokens2);
                 int subTokLen = normalizeVectors(subtokens1, subtokens2);
                 for (int k = 0; k < subTokLen; ++k) {
-                    if (isdigit(subtokens1[k][0])) {
-                        long sl1 = strtol(subtokens1[k].c_str(), &error1, 10);
-                        long sl2 = strtol(subtokens2[k].c_str(), &error2, 10);
-
+                    long sl1 = strtol(subtokens1[k].c_str(), &error1, 10);
+                    long sl2 = strtol(subtokens2[k].c_str(), &error2, 10);
+                    if (!error1 && !error2) {
                         if (sl1 < sl2) {
                             return LESS;
                         } else if (sl1 > sl2) {
                             return GREATER;
                         }
                     } else {
-                        // pure string tokens
+                        
+                        // string tokens
                         if (subtokens1[k][1] == 0 && subtokens2[k][1] == 0) {
-
+                            
                             if (subtokens1[k][0] < subtokens2[k][0]) {
                                 return LESS;
                             } else if (subtokens1[k][0] > subtokens2[k][0]) {
@@ -179,6 +179,8 @@ void tokenizeIntoBlocks(const string& version, vector<string>& blocks)
 }
 
 
+#ifdef TEST
+
 void check(const string& v1, const string& v2,
            VersionComparator::COMP_RESULT expected, bool compare=true)
 {
@@ -210,7 +212,6 @@ void check(const string& v1, const string& v2,
 }
 
 
-#ifdef TEST
 
 int main(int argc, char** argv)
 {
@@ -243,6 +244,8 @@ int main(int argc, char** argv)
         check("1.4.2a1-2", "1.4.2a2-2", LESS);
         check("1.4.2b1-2", "1.4.2a2-2", GREATER);
         check("1.4.2beta3", "1.4.2alpha2", GREATER);
+        check("1.4.2-some", "1.4.2-1", UNDEFINED);
+        check("1.4.2-1", "1.4.2-some", UNDEFINED);
     } else {
         check(argv[1], argv[2], UNDEFINED, false);
     }
