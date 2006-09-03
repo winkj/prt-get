@@ -40,6 +40,12 @@ using namespace std;
 using namespace StringHelper;
 
 
+using VersionComparator::COMP_RESULT;
+using VersionComparator::GREATER;
+using VersionComparator::LESS;
+using VersionComparator::EQUAL;
+using VersionComparator::UNDEFINED;
+
 const string PrtGet::CONF_FILE = SYSCONFDIR"/prt-get.conf";
 const string PrtGet::DEFAULT_CACHE_FILE = LOCALSTATEDIR"/lib/pkg/prt-get.cache";
 
@@ -148,7 +154,7 @@ void PrtGet::printUsage()
     cout << "                --all    list all dependent packages, not "
          << "only installed" << endl;
     cout << "                --recursive    print recursive listing" << endl;
-    cout << "                --tree         print recursive tree listing" 
+    cout << "                --tree         print recursive tree listing"
          << endl;
 
     cout << "\nSEARCHING" << endl;
@@ -792,14 +798,17 @@ void PrtGet::printQuickDiff()
     const map<string, string>& installed = m_pkgDB->installedPackages();
     map<string, string>::const_iterator it = installed.begin();
     const Package* p = 0;
+    COMP_RESULT result;
     for ( ; it != installed.end(); ++it ) {
         if ( !m_locker.isLocked( it->first ) ) {
             p = m_repo->getPackage( it->first );
             if ( p ) {
-                if (greaterThan(p->version() + "-" + p->release(),
-                                it->second)) {
+                result = compareVersions(p->versionReleaseString(),
+                                         it->second);
+                if (result == GREATER) {
                     cout <<  it->first.c_str() << " ";
                 }
+                // we don't care about undefined diffs here
             }
         }
     }
@@ -807,6 +816,28 @@ void PrtGet::printQuickDiff()
 }
 
 
+void PrtGet::printFormattedDiffLine(const string& name,
+                                    const string& version1,
+                                    const string& version2,
+                                    bool isLocked)
+{
+    cout.setf( ios::left, ios::adjustfield );
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout <<  name;
+
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout << version1;
+
+    string locked = "";
+    if ( isLocked ) {
+        locked = "locked";
+    }
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout << version2 << locked << endl;
+}
 /*!
   print an overview of port which are installed in a different version
   than they are in the repository
@@ -843,6 +874,7 @@ void PrtGet::printDiff()
     map<string, string>::const_iterator it = installed.begin();
     const Package* p = 0;
     int count = 0;
+    COMP_RESULT result;
     for ( ; it != installed.end(); ++it ) {
 
         p = m_repo->getPackage( it->first );
@@ -851,8 +883,9 @@ void PrtGet::printDiff()
                 continue;
             }
 
-            if ( greaterThan( p->version() + "-" + p->release(),
-                              it->second ) ) {
+            result = compareVersions( p->versionReleaseString(),
+                                      it->second );
+            if (result  == GREATER ) {
                 if ( !m_locker.isLocked( it->first )  ||
                      m_parser->otherArgs().size() > 0 ||
                      m_parser->all() ) {
@@ -862,38 +895,45 @@ void PrtGet::printDiff()
                     if ( count == 1 ) {
                         cout << "Differences between installed packages "
                              << "and ports tree:\n" << endl;
-                        cout.setf( ios::left, ios::adjustfield );
-                        cout.width( 20 );
-                        cout.fill( ' ' );
-                        cout << "Ports";
-                        cout.width( 20 );
-                        cout.fill( ' ' );
-                        cout << "Installed";
-                        cout.width( 20 );
-                        cout.fill( ' ' );
-                        cout << "Available in the ports tree" << endl << endl;
+                        printFormattedDiffLine("Port",
+                                               "Installed",
+                                               "Available in the ports tree",
+                                               false);
+                        cout << endl;
                     }
-                    cout.setf( ios::left, ios::adjustfield );
-                    cout.width( 20 );
-                    cout.fill( ' ' );
-                    cout <<  it->first.c_str();
 
-                    cout.width( 20 );
-                    cout.fill( ' ' );
-                    cout << it->second.c_str();
-
-                    string locked = "";
-                    if ( m_locker.isLocked( it->first ) ) {
-                        locked = "locked";
-                    }
-                    cout.width( 20 );
-                    cout.fill( ' ' );
-                    cout << (p->version()+"-"+p->release()).c_str()
-                         << locked << endl;
+                    printFormattedDiffLine(it->first,
+                                           it->second,
+                                           p->versionReleaseString(),
+                                           m_locker.isLocked( it->first ));
                 }
+            } else if (result == UNDEFINED) {
+                m_undefinedVersionComp.push_back(make_pair(p, it->second));
             }
         }
     }
+
+    if (m_undefinedVersionComp.size()) {
+        cout << "\n\n" << "Undecidable version differences (use --strict-diff)"
+             << endl << endl;
+        printFormattedDiffLine("Port",
+                               "Installed",
+                               "Available in the ports tree",
+                               false);
+        cout << endl;
+
+        list< pair< const Package*, string > >::iterator it =
+            m_undefinedVersionComp.begin();
+        const Package* p;
+        for (; it != m_undefinedVersionComp.end(); ++it) {
+            p = it->first;
+            printFormattedDiffLine(p->name(),
+                                   p->versionReleaseString(),
+                                   it->second,
+                                   false);
+        }
+    }
+
 
     if ( count == 0 ) {
         cout << "No differences found" << endl;
@@ -920,8 +960,8 @@ void PrtGet::printPath()
 
 /*! helper method to print the result of an InstallTransaction */
 void PrtGet::evaluateResult( InstallTransaction& transaction,
-                          bool update,
-                          bool interrupted )
+                             bool update,
+                             bool interrupted )
 {
     int errors = 0;
 
@@ -941,7 +981,6 @@ void PrtGet::evaluateResult( InstallTransaction& transaction,
             cout << *iit << endl;
         }
     }
-
 
     const list< pair<string, string> >& missing = transaction.missing();
     if ( missing.size() ) {
@@ -1017,6 +1056,7 @@ void PrtGet::evaluateResult( InstallTransaction& transaction,
             cout << endl;
         }
 
+
         // readme's
         if ( atLeastOnePackageHasReadme ) {
             if ( m_config->readmeMode() == Configuration::VERBOSE_README ) {
@@ -1031,9 +1071,25 @@ void PrtGet::evaluateResult( InstallTransaction& transaction,
                 }
             }
         }
-
-        cout << endl;
     }
+    if ( m_undefinedVersionComp.size() ) {
+        cout << endl
+             << "-- Packages with undecidable version "
+             << "difference (use --strict-diff)"
+             << endl;
+        list< pair<const Package*, string> >::const_iterator uit =
+            m_undefinedVersionComp.begin();
+        const Package * p;
+        for ( ; uit != m_undefinedVersionComp.end(); ++uit ) {
+            p = uit->first;
+            cout << p->name() << " ("
+                 << p->versionReleaseString()
+                 << " vs "
+                 << uit->second << ")" << endl;
+        }
+    }
+
+    cout << endl;
 
     if ( errors == 0 && !interrupted ) {
         cout << "prt-get: " << command[1] << " successfully" << endl;
@@ -1093,23 +1149,23 @@ void PrtGet::createCache()
 /*!
   \return true if v1 is greater than v2
  */
-bool PrtGet::greaterThan( const string& v1, const string& v2 )
+COMP_RESULT PrtGet::compareVersions( const string& v1, const string& v2 )
 {
-    using namespace VersionComparator;
-
     if (v1 == v2) {
-        return false;
+        return EQUAL;
     }
 
 
     if (m_parser->preferHigher() ||
         (m_config->preferHigher() && !m_parser->strictDiff())) {
 
-        COMP_RESULT result = compareVersions(v1, v2);
-        return (result == GREATER);
+        COMP_RESULT result = VersionComparator::compareVersions(v1, v2);
+        return result;
     }
 
-    return v1 != v2;
+    if (v1 != v2)
+        return GREATER;
+    return LESS;
 }
 
 int PrtGet::returnValue() const
@@ -1172,7 +1228,7 @@ void PrtGet::printf()
         if ( m_pkgDB->isInstalled( p->name() ) ) {
             string ip = p->name() + "-" +
                 m_pkgDB->getPackageVersion( p->name() );
-            if ( ip == p->name() + "-" + p->version() + "-" + p->release() ) {
+            if ( ip == p->name() + "-" + p->versionReleaseString() ) {
                 isInst = "yes";
             } else {
                 isInst = "diff";
@@ -1255,15 +1311,15 @@ void PrtGet::printDependent()
 
     initRepo();
     string arg = *(m_parser->otherArgs().begin());
-    
-    if (m_parser) {
+
+    if (m_parser->printTree()) {
         cout << arg << endl;
         printDependent(arg, 2);
     } else {
         printDependent(arg, 0);
-    }   
+    }
 }
-    
+
 void PrtGet::printDependent(const string& dep, int level)
 {
     map<string, Package*>::const_iterator it = m_repo->packages().begin();
@@ -1294,7 +1350,7 @@ void PrtGet::printDependent(const string& dep, int level)
     // a -> b -> d
     //  \     ^
     //   > c /
-    // 
+    //
     // trying to rebuild 'd' before 'c' might possibly fail
     string indent = "";
     if (m_parser->printTree()) {
@@ -1305,26 +1361,26 @@ void PrtGet::printDependent(const string& dep, int level)
     set<const Package*>::iterator it2 = dependent.begin();
     for ( ; it2 != dependent.end(); ++it2 ) {
         const Package* p = *it2;
-        
+
         if (m_parser->recursive() && !m_parser->printTree()) {
             if (shownMap[p->name()]) {
                 continue;
             }
             shownMap[p->name()] = true;
         }
-                
+
         if ( m_parser->all() || m_pkgDB->isInstalled( p->name() ) ) {
-                        
+
             cout << indent << p->name();
             if ( m_parser->verbose() > 0 ) {
-                cout << " " << p->version() << "-" << p->release();
+                cout << " " << p->versionReleaseString();
             }
             if ( m_parser->verbose() > 1 ) {
                 cout << ":  " << p->description();
             }
 
             cout << endl;
-            
+
             if (m_parser->recursive()) {
                 printDependent( p->name(), level+2 );
             }
@@ -1338,7 +1394,7 @@ void PrtGet::listOrphans()
     map<string, string> installed = m_pkgDB->installedPackages();
     map<string, bool> required;
     map<string, string>::iterator it = installed.begin();
-    
+
     for (; it != installed.end(); ++it) {
         list<string> tokens;
         const Package* p = m_repo->getPackage(it->first);
@@ -1349,12 +1405,12 @@ void PrtGet::listOrphans()
                 required[*lit] = true;
             }
         }
-    }   
-    
+    }
+
     // - we could store the package pointer in another map to avoid
     // another getPackage lockup, but it seems better to optimized for
     // memory since it's only used when called with -vv
-    
+
     it = installed.begin();
     for (; it != installed.end(); ++it) {
         if (!required[it->first]) {
@@ -1393,13 +1449,17 @@ void PrtGet::sysup()
     const map<string, string>& installed = m_pkgDB->installedPackages();
     map<string, string>::const_iterator it = installed.begin();
     const Package* p = 0;
+    COMP_RESULT result;
     for ( ; it != installed.end(); ++it ) {
         if ( !m_locker.isLocked( it->first ) ) {
             p = m_repo->getPackage( it->first );
             if ( p ) {
-                if ( greaterThan( p->version() + "-" + p->release(),
-                                  it->second ) ) {
+                result = compareVersions( p->versionReleaseString(),
+                                          it->second );
+                if (result  == GREATER ) {
                     packagesToUpdate.push_back( it->first );
+                } else if (result  == UNDEFINED ) {
+                    m_undefinedVersionComp.push_back(make_pair(p, it->second));
                 }
             }
         }
@@ -1906,7 +1966,7 @@ void PrtGet::printDepsLevel(int indent, const Package* package)
         }
         const Package* p = m_repo->getPackage( *it );
         if (p) {
-            if  (p->dependencies().length() > 0) {
+            if (p->dependencies().length() > 0) {
                 map<string, bool>::iterator shownIt = shownMap.find(*it);
                 if (shownIt != shownMap.end()) {
                     cout << " -->" << endl;;

@@ -55,14 +55,16 @@ public:
     const bool hasReadme() const;
     const bool hasPreInstall() const;
     const bool hasPostInstall() const;
+    
+    std::string versionReleaseString() const;
 
     void setDependencies( const std::string& dependencies );
 
 
 private:
     void load() const;
-    
-    static void expandShellCommands(std::string& input, 
+
+    static void expandShellCommands(std::string& input,
                                     const time_t& timeNow,
                                     const struct utsname unameBuf);
 
@@ -96,9 +98,13 @@ struct PackageData
     std::string packager;
     std::string maintainer;
 
+    std::string versionReleaseString;
+
     bool hasReadme;
     bool hasPreInstall;
     bool hasPostInstall;
+    
+    void generateVersionReleaseString();
 };
 
 #endif /* _PACKAGE_H_ */

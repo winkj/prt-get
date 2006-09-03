@@ -25,6 +25,7 @@ using namespace std;
 #include "signaldispatcher.h"
 #include "locker.h"
 #include "installtransaction.h"
+#include "versioncomparator.h"
 
 /*!
   \class PrtGet
@@ -44,7 +45,7 @@ public:
         PG_INSTALL_ERROR,
         PG_PARTIAL_INSTALL_ERROR
     };
-
+    
     PrtGet( const ArgParser* parser );
     ~PrtGet();
 
@@ -97,7 +98,7 @@ public:
 protected:
 
     void printDepsLevel(int indent, const Package* package);
-    
+
     void printDependent(const std::string& dep, int level);
 
     void executeTransaction( InstallTransaction& transaction,
@@ -116,6 +117,12 @@ protected:
                               list<string>& target );
 
     void warnPackageNotFound(InstallTransaction& transaction);
+    
+    static void printFormattedDiffLine(const string& name,
+                                       const string& version1,
+                                       const string& version2,
+                                       bool locked);
+
 
     Repository* m_repo;
     PkgDB* m_pkgDB;
@@ -144,8 +151,11 @@ protected:
     void assertExactArgCount(int count);
     void argCountFailure(int count, const string& specifier);
 
-    bool greaterThan( const string& v1, const string& v2 );
+    VersionComparator::COMP_RESULT
+    compareVersions( const string& v1, const string& v2 );
     static bool printFile(const string& file);
+
+    std::list< std::pair<const Package*, std::string> > m_undefinedVersionComp;
 };
 
 #endif /* _PRTGET_H_ */

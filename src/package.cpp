@@ -130,6 +130,13 @@ const bool Package::hasReadme() const
     return m_data->hasReadme;
 }
 
+/*! \return a typically formatted version-release string */
+string Package::versionReleaseString() const
+{
+    load();
+    return m_data->versionReleaseString;
+}
+
 const bool Package::hasPreInstall() const
 {
     return m_data->hasPreInstall;
@@ -162,10 +169,10 @@ void Package::load() const
     const int length = BUFSIZ;
     char input[length];
     string line;
-    
+
     time_t timeNow;
     time(&timeNow);
-    
+
     struct utsname unameBuf;
     if (uname(&unameBuf) != 0) {
         unameBuf.release[0] = '\0';
@@ -235,6 +242,7 @@ void Package::load() const
     }
     fclose( fp );
 
+    m_data->generateVersionReleaseString();
 
     string file = m_data->path + "/" + m_data->name + "/README";
     struct stat buf;
@@ -282,29 +290,36 @@ PackageData::PackageData( const string& name_,
       maintainer( maintainer_ )
 
 {
+    generateVersionReleaseString();
+    
     hasReadme = ( stripWhiteSpace( hasReadme_ ) == "yes" );
     hasPreInstall = ( stripWhiteSpace( hasPreInstall_ ) == "yes" );
     hasPostInstall = ( stripWhiteSpace( hasPostInstall_ ) == "yes" );
 }
 
+void PackageData::generateVersionReleaseString()
+{
+    versionReleaseString = version + "-" + release;
+}
 
-void Package::expandShellCommands(std::string& input, 
+
+void Package::expandShellCommands(std::string& input,
                                   const time_t& timeNow,
                                   const struct utsname unameBuf)
 {
     // TODO: consider dropping either of the tagsets, depending on feedback
-    
+
     static const int TAG_COUNT = 2;
     string startTag[TAG_COUNT] = { "`", "$(" };
     string endTag[TAG_COUNT] = { "`", ")" };
-    
+
     for (int i = 0; i < TAG_COUNT; ++i) {
         string::size_type pos;
         while ((pos = input.find(startTag[i])) != string::npos) {
 
             if (unameBuf.release) {
-                input = replaceAll(input, 
-                                   startTag[i] + "uname -r" + endTag[i], 
+                input = replaceAll(input,
+                                   startTag[i] + "uname -r" + endTag[i],
                                    unameBuf.release);
             }
 
@@ -314,9 +329,9 @@ void Package::expandShellCommands(std::string& input,
                 string::size_type startpos, endpos;
                 endpos = input.find(endTag[i], pos+1);
                 startpos = input.find('+', pos+1);
-        
+
                 string format = input.substr(startpos+1, endpos-startpos-1);
-        
+
                 // support date '+...' and date "+..."
                 int len = format.length();
                 if (format[len-1] == '\'' || format[len-1] == '"') {
@@ -325,7 +340,7 @@ void Package::expandShellCommands(std::string& input,
                 char timeBuf[32];
                 strftime(timeBuf, 32, format.c_str(), localtime(&timeNow));
 
-                input = input.substr(0, pos) + timeBuf + 
+                input = input.substr(0, pos) + timeBuf +
                     input.substr(endpos+1);
             }
         }

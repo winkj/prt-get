@@ -1,3 +1,8 @@
+* 0.5.13	00.09.2006	Johannes Winkelmann
+- Show undecided versions in diff and sysup when using "prefer higher"
+- fix display bug in "dependent"
+- fix bug in version comparator
+
 * 0.5.12	00.04.2006  Johannes Winkelmann
 - Add 'depinst' in 'help' (thanks Simone)
 - Fix compilation on OpenBSD
