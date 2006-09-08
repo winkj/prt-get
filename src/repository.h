@@ -34,7 +34,7 @@ public:
 
     const Package* getPackage( const string& name ) const;
     const map<string, Package*>& packages() const;
-    const map<string, pair<Package*, Package*> >& shadowedPackages() const;
+    const list<pair<Package*, Package*> >& shadowedPackages() const;
 
     void searchMatchingPackages( const string& pattern,
                                  list<Package*>& target,
@@ -74,7 +74,7 @@ private:
     
     void parseDependencyList();
 
-    map<string, pair<Package*, Package*> > m_shadowedPackages;
+    list<pair<Package*, Package*> > m_shadowedPackages;
     map<string, Package*> m_packageMap;
 };
 

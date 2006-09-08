@@ -69,7 +69,7 @@ const map<string, Package*>& Repository::packages() const
   \a second is the port which preceeds over \a first
   \return a map of duplicate packages in the repository
 */
-const map<string, pair<Package*, Package*> >& Repository::shadowedPackages() const
+const list< pair<Package*, Package*> >& Repository::shadowedPackages() const
 {
     return m_shadowedPackages;
 }
@@ -138,6 +138,11 @@ void Repository::searchMatchingPackages( const string& pattern,
             }
         }
     }
+}
+
+int compareShadowPair(pair<Package*, Package*>& p1, pair<Package*, Package*>& p2)
+{
+    return p1.second->name() < p2.second->name();
 }
 
 
@@ -226,7 +231,7 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
                         // no such package found, add
                         m_packageMap[name] = p;
                     } else if ( listDuplicate ) {
-                        m_shadowedPackages[name] = make_pair( p, hidden->second );
+                        m_shadowedPackages.push_back(make_pair( p, hidden->second ));
                     } else {
                         delete p;
                     }
@@ -235,7 +240,8 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
         }
         closedir( d );
     }
-    
+
+    m_shadowedPackages.sort(compareShadowPair);
     parseDependencyList();
 }
 

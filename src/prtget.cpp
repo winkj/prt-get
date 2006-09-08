@@ -277,12 +277,13 @@ void PrtGet::listShadowed()
     string output;
     Package* p1;
     Package* p2;
-    map<string, pair<Package*, Package*> >::const_iterator it =
+
+    list<pair<Package*, Package*> >::const_iterator it =
         m_repo->shadowedPackages().begin();
     for ( ; it != m_repo->shadowedPackages().end(); ++it ) {
         output = format;
-        p1 = it->second.second;
-        p2 = it->second.first;
+        p1 = it->second;
+        p2 = it->first;
 
         StringHelper::replaceAll(output, "%n",  p1->name());
         StringHelper::replaceAll(output, "%p1", p1->path() + "/" + p1->name());
