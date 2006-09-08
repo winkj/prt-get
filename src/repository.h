@@ -69,6 +69,9 @@ public:
     static const std::string EXTERNAL_DEPENDENCY_FILE;
 
 private:
+    static int compareShadowPair(pair<Package*, Package*>& p1, 
+                                 pair<Package*, Package*>& p2);
+
     static const std::string CACHE_VERSION;
     bool m_useRegex;
     

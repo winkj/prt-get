@@ -64,10 +64,10 @@ const map<string, Package*>& Repository::packages() const
 
 
 /*!
-  Returns a map of duplicate packages in the repository. The key is the name
-  of the package, the value a pair where \a first the shadowed port and
+  Returns a sorted list of duplicate packages in the repository. 
+  In the pairs \a first is the shadowed port and
   \a second is the port which preceeds over \a first
-  \return a map of duplicate packages in the repository
+  \return a list of duplicate packages in the repository
 */
 const list< pair<Package*, Package*> >& Repository::shadowedPackages() const
 {
@@ -140,7 +140,8 @@ void Repository::searchMatchingPackages( const string& pattern,
     }
 }
 
-int compareShadowPair(pair<Package*, Package*>& p1, pair<Package*, Package*>& p2)
+int Repository::compareShadowPair(pair<Package*, Package*>& p1, 
+                                  pair<Package*, Package*>& p2)
 {
     return p1.second->name() < p2.second->name();
 }
@@ -231,7 +232,8 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
                         // no such package found, add
                         m_packageMap[name] = p;
                     } else if ( listDuplicate ) {
-                        m_shadowedPackages.push_back(make_pair( p, hidden->second ));
+                        m_shadowedPackages.push_back(
+                                make_pair( p, hidden->second ));
                     } else {
                         delete p;
                     }
