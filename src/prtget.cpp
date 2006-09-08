@@ -268,21 +268,28 @@ void PrtGet::listShadowed()
 
     initRepo( true );
 
-    string format = "%1 > %2\n";
+    string format = "%p1 %v1 > %p2 %v2\n";
     if (m_parser->otherArgs().size() > 0)
         format = *(m_parser->otherArgs().begin());
     else if (m_parser->verbose() > 0) 
-        format = "* %n\n  %1 preceeds over \n  %2\n";
+        format = "* %n\n  %p1 %v1 preceeds over \n  %p2 %v2\n";
 
     string output;
-    map<string, pair<string, string> >::const_iterator it =
+    Package* p1;
+    Package* p2;
+    map<string, pair<Package*, Package*> >::const_iterator it =
         m_repo->shadowedPackages().begin();
     for ( ; it != m_repo->shadowedPackages().end(); ++it ) {
         output = format;
-        StringHelper::replaceAll(output, "%n", it->first);
-        StringHelper::replaceAll(output, "%1", it->second.second);
-        StringHelper::replaceAll(output, "%2", it->second.first);
-        
+        p1 = it->second.second;
+        p2 = it->second.first;
+
+        StringHelper::replaceAll(output, "%n",  p1->name());
+        StringHelper::replaceAll(output, "%p1", p1->path() + "/" + p1->name());
+        StringHelper::replaceAll(output, "%p2", p2->path() + "/" + p2->name());
+        StringHelper::replaceAll(output, "%v1", p1->versionReleaseString());
+        StringHelper::replaceAll(output, "%v2", p2->versionReleaseString());
+
         StringHelper::replaceAll(output, "\\n", "\n");
         cout << output;
     }

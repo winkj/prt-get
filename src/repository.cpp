@@ -69,7 +69,7 @@ const map<string, Package*>& Repository::packages() const
   \a second is the port which preceeds over \a first
   \return a map of duplicate packages in the repository
 */
-const map<string, pair<string, string> >& Repository::shadowedPackages() const
+const map<string, pair<Package*, Package*> >& Repository::shadowedPackages() const
 {
     return m_shadowedPackages;
 }
@@ -226,12 +226,9 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
                         // no such package found, add
                         m_packageMap[name] = p;
                     } else if ( listDuplicate ) {
-                        Package* old = hidden->second;
-                        string ps = p->path() + "/" + p->name() +
-                            " " + p->versionReleaseString();
-                        string os = old->path() + "/" + old->name() +
-                            " " + old->versionReleaseString();
-                            m_shadowedPackages[name] = make_pair( ps, os );
+                        m_shadowedPackages[name] = make_pair( p, hidden->second );
+                    } else {
+                        delete p;
                     }
                 }
             }
