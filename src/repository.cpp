@@ -228,9 +228,9 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
                     } else if ( listDuplicate ) {
                         Package* old = hidden->second;
                         string ps = p->path() + "/" + p->name() +
-                            "-" + p->version();
+                            " " + p->versionReleaseString();
                         string os = old->path() + "/" + old->name() +
-                            "-" + old->version();
+                            " " + old->versionReleaseString();
                             m_shadowedPackages[name] = make_pair( ps, os );
                     }
                 }

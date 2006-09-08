@@ -2,6 +2,7 @@
 - Show undecided versions in diff and sysup when using "prefer higher"
 - fix display bug in "dependent"
 - fix bug in version comparator
+- Simplify output of 'dup', suggested by maro (-v -> old format)
 
 * 0.5.12	00.04.2006  Johannes Winkelmann
 - Add 'depinst' in 'help' (thanks Simone)

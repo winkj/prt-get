@@ -267,14 +267,24 @@ void PrtGet::listShadowed()
     }
 
     initRepo( true );
-    cout << "Hidden packages:" << endl;
+
+    string format = "%1 > %2\n";
+    if (m_parser->otherArgs().size() > 0)
+        format = *(m_parser->otherArgs().begin());
+    else if (m_parser->verbose() > 0) 
+        format = "* %n\n  %1 preceeds over \n  %2\n";
+
+    string output;
     map<string, pair<string, string> >::const_iterator it =
         m_repo->shadowedPackages().begin();
     for ( ; it != m_repo->shadowedPackages().end(); ++it ) {
-        string name = it->first;
-        cout << "* " << name << endl;
-        cout << "  " << it->second.second << " preceeds over" << endl;
-        cout << "  " << it->second.first << endl;
+        output = format;
+        StringHelper::replaceAll(output, "%n", it->first);
+        StringHelper::replaceAll(output, "%1", it->second.second);
+        StringHelper::replaceAll(output, "%2", it->second.first);
+        
+        StringHelper::replaceAll(output, "\\n", "\n");
+        cout << output;
     }
 }
 

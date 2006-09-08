@@ -223,10 +223,24 @@ Subtrees already shown are marked with '-->' to save some space, in
 order to show them all, add the --all switch
 
 .TP 
-.B dup
+.B dup [-v] [format]
 List ports which can be found in multiple directories configured in
 .B /etc/prt-get.conf
+Use the verbose switch to simulate the output of version 5.12 and older (likely
+to go away in the future). The format string can be used to create user
+specified formats. The following symbols are currently replaced:
 
+.TP 
+\ \ \ \(bu
+%n \-> name of the port
+
+.TP 
+\ \ \ \(bu
+%1 \-> Port which takes precedence
+
+.TP 
+\ \ \ \(bu
+%2 \-> Port which is hidden 
 
 .TP 
 .B list [\-v|\-vv] [filter] [--path] [--regex]
