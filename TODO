@@ -5,7 +5,7 @@ $PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR
 - prefer toolchain (patch in trac)
 - logging: check for non-root owned symlinks
 - logging: reject relative logfile names
-- parallel build and upload
+- parallel build and download
 - download command
 - rewrite arg parser
 
