@@ -1,66 +1,38 @@
 - add --rebuild-set to dependent
----------------------------
 - use `eval $(fgrep -h 'PKGMK_PACKAGE_DIR=' $(which pkgmk) /etc/pkgmk.conf) && echo
 $PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR
-- add update-footprint, update-md5sum commands (patch in trac)
 - allow dependency injection for sysup, with previews
 - prefer toolchain (patch in trac)
 - logging: check for non-root owned symlinks
 - logging: reject relative logfile names
+- parallel build and upload
+- download command
+- rewrite arg parser
 
-==============================================================================
+CONSIDER:
 
-
-
-
-
-
-
-
-- add support to "prefer higher" for certain packages ?
-
-
-
-
-next release:
-- configuration override/extend
- [20:01] <cptn> --config-add="prtdir /tmp" even
- [20:01] <cptn> --config-set="logfile /tmp/%n.log"
- [20:14] <cptn> prt-get --config-set="prtdir /tmp" \
-                        --config-add="prtdir /usr"
- [20:14] <cptn> the 'set' would delete the config file's prtdir settings
-
-Don't bail out if no prt-get.conf is found if the user specified
---config-* options
-
-enum KindOfConfig {ADD, SET}
-argparser: user addConfig(string, KindOfConfig);
-config: go through additional configuration options; add and/or replace
-
-
-
-1.0.0
-
+- default formats for printf and dup
+- add update-footprint, update-md5sum commands (patch in trac)
 - sysup
   - allow injecting of new (uninstalled) dependencies
   - allow to prohibit recompilation of packages when a dependency failed
     to be updated in this sysup run
+- big command consolidation
 
-- better reports (installed/failed/not even tried to install)
-[ ] message log for prt-get messages ?
-[ ] --quiet mode; suppress output of pkgmk and pkgadd
-[ ] prt-get diff stats: "100 Packages with differences"
+  prt-get dep|depends [--tree|-T] [--recursive|-R] [--quick|-Q]
+    so
+    depends -> dep
+    current depends -> dep -R
+    quickdep -> dep -Q
+    deptree -> dep -T
 
----------------------------
+  Similar for other commands
 
-later
 
-- parallel download (mt)
-- download only
-- group support
-- Actions/Commands
-  - Help per command
-- Dynamic command binding
+OLD NOTES:
+
+- --quiet mode; suppress output of pkgmk and pkgadd
+- prt-get diff stats: "100 Packages with differences"
 - Make InstallTransaction a real install transaction:
   - rollback pre-install if package building failed
   - needs heavy refactoring to be easier to understand/maintain
@@ -75,48 +47,13 @@ later
     _lots_ of packages; maybe also think about forgeting not so
     important things like packages installed before etc
 
-[ ] prt-get rm and cd
-[ ] cache file class, help class
-[ ] interrupt handler (ctrl-c) kill pkgmk/pkgadd, delete lock files, say
+- interrupt handler (ctrl-c) kill pkgmk/pkgadd, delete lock files, say
     "prt-get: action cancelled"; warn when cancel during download ->
     STATE variable, separate download and build.
-[ ] lock files for log, cache (lock file class)
-[ ] move command name out of execTransaction (would be wrong for e.g.
+- move command name out of execTransaction (would be wrong for e.g.
     sysup)
 
-
-SHORT TERM
-------------
-
-* Answer FAQs
-
-* create a fileExists(), createDir() etc helper class
-
-* questions
-  - should the install/update result include the version/release?
-
-* cosmetic
-  - move all output messages to prtget.cpp (away from main.cpp)
-  - remove "using namespace std" from header file
-
-* test
-  - add asserts
-
-* functional
-  - check exit messages (strings). always add 'prt-get'
-  
-* refactor
-  - check operations in prtget.cpp for common code
-  - make InstallTransaction more modular (download/build/install)
-
-LONG TERM
-------------------------------
-* remove quickdiff
-* move find command into list --filter="..." ???
-
-* symbolic exit codes
-
-* new commands:
+- symbolic exit codes
 
 * questions:
   - should there be a install/update mixed to mode, to install and update,
@@ -126,15 +63,3 @@ LONG TERM
     config file again. This could be done by creating another ports
     directories an creation symlinks there to. Could improve performance
   - might people like ansi colors?
-
-* new features
-  - list shadow packages (dup) for arguments 
-
-* - rebuild all ports using dependency information
-
-
-LONG LONG TERM
---------------
-- parallel download for installing/updating multiple packages (at least
-  download of 2nd package while building first)
-
