@@ -1,3 +1,4 @@
+- handle 27e < 28 in version comperator
 - add --rebuild-set to dependent
 - use `eval $(fgrep -h 'PKGMK_PACKAGE_DIR=' $(which pkgmk) /etc/pkgmk.conf) && echo
 $PKGMK_PACKAGE_DIR` to determine PACKAGE_DIR

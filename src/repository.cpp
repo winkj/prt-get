@@ -31,8 +31,6 @@ using namespace StringHelper;
 
 
 const string Repository::CACHE_VERSION = "V5";
-const string Repository::EXTERNAL_DEPENDENCY_FILE = 
-    LOCALSTATEDIR"/lib/pkg/prt-get.deplist";
 
 /*!
   Create a repository
@@ -64,7 +62,7 @@ const map<string, Package*>& Repository::packages() const
 
 
 /*!
-  Returns a sorted list of duplicate packages in the repository. 
+  Returns a sorted list of duplicate packages in the repository.
   In the pairs \a first is the shadowed port and
   \a second is the port which preceeds over \a first
   \return a list of duplicate packages in the repository
@@ -72,15 +70,6 @@ const map<string, Package*>& Repository::packages() const
 const list< pair<Package*, Package*> >& Repository::shadowedPackages() const
 {
     return m_shadowedPackages;
-}
-
-
-void Repository::parseDependencyList()
-{
-    map<string, string> depMap;
-    if (DataFileParser::parse(EXTERNAL_DEPENDENCY_FILE, depMap)) {
-        addDependencies(depMap);
-    }
 }
 
 
@@ -140,7 +129,7 @@ void Repository::searchMatchingPackages( const string& pattern,
     }
 }
 
-int Repository::compareShadowPair(pair<Package*, Package*>& p1, 
+int Repository::compareShadowPair(pair<Package*, Package*>& p1,
                                   pair<Package*, Package*>& p2)
 {
     return p1.second->name() < p2.second->name();
@@ -244,7 +233,6 @@ void Repository::initFromFS( const list< pair<string, string> >& rootList,
     }
 
     m_shadowedPackages.sort(compareShadowPair);
-    parseDependencyList();
 }
 
 /*!
@@ -299,8 +287,6 @@ Repository::initFromCache( const string& cacheFile )
     }
     fclose( fp );
 
-    parseDependencyList();
-    
     return READ_OK;
 }
 

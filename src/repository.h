@@ -66,16 +66,12 @@ public:
     static bool createOutputDir( const string& path );
     void addDependencies( std::map<string, string>& deps );
 
-    static const std::string EXTERNAL_DEPENDENCY_FILE;
-
 private:
-    static int compareShadowPair(pair<Package*, Package*>& p1, 
+    static int compareShadowPair(pair<Package*, Package*>& p1,
                                  pair<Package*, Package*>& p2);
 
     static const std::string CACHE_VERSION;
     bool m_useRegex;
-    
-    void parseDependencyList();
 
     list<pair<Package*, Package*> > m_shadowedPackages;
     map<string, Package*> m_packageMap;

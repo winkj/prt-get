@@ -271,7 +271,7 @@ void PrtGet::listShadowed()
     string format = "%p1 %v1 > %p2 %v2\n";
     if (m_parser->otherArgs().size() > 0)
         format = *(m_parser->otherArgs().begin());
-    else if (m_parser->verbose() > 0) 
+    else if (m_parser->verbose() > 0)
         format = "* %n\n  %p1 %v1 preceeds over \n  %p2 %v2\n";
 
     string output;
@@ -2011,13 +2011,6 @@ void PrtGet::dumpConfig()
     cout.width( 20 );
     cout.fill( ' ' );
     cout << "Alias file: " << PkgDB::ALIAS_STORE << endl;
-
-    cout.setf( ios::left, ios::adjustfield );
-    cout.width( 20 );
-    cout.fill( ' ' );
-    cout << "Ext. dep. file: "
-         << Repository::EXTERNAL_DEPENDENCY_FILE << endl;
-
 
     if (!m_parser->noStdConfig()) {
         string fName = CONF_FILE;
