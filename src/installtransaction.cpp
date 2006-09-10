@@ -582,11 +582,16 @@ InstallTransaction::calcDependencies( )
     return SUCCESS;
 }
 
+
+/*
+ * getPkgDest assumes that you're in the build directory already
+ */
 string InstallTransaction::getPkgDest(const string& installRoot)
 {
     string pkgdest = "";
-    string cmd = ". %s/etc/pkgmk.conf && echo $PKGMK_PACKAGE_DIR";
-    StringHelper::replaceAll(cmd, "%s", installRoot); 
+    string cmd = "eval $(fgrep -h 'PKGMK_PACKAGE_DIR=' "
+        "/usr/bin/pkgmk /etc/pkgmk.conf) "
+        "&& echo $PKGMK_PACKAGE_DIR";
     FILE* p = popen(cmd.c_str(), "r");
     if ( p ) {
         char line[256];
