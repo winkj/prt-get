@@ -103,7 +103,7 @@ private:
                                   bool update,
                                   InstallInfo& info ) const;
 
-    static string getPkgDest();
+    static string getPkgDest(const string& installRoot);
 
     PkgDB* m_pkgDB;
     DepResolver m_resolver;

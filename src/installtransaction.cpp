@@ -246,7 +246,7 @@ InstallTransaction::installPackage( const Package* package,
         if ( fdlog == -1 ) {
             return LOG_FILE_FAILURE;
         }
-        
+
         write( fdlog, message.c_str(), message.length());
         write( fdlog, "\n", 1);
 
@@ -291,7 +291,7 @@ InstallTransaction::installPackage( const Package* package,
         result = PKGMK_FAILURE;
     } else {
         // -- update
-        string pkgdest = getPkgDest();
+        string pkgdest = getPkgDest(parser->installRoot());
         if ( pkgdest != "" ) {
             // TODO: don't manipulate pkgdir
             pkgdir = pkgdest;
@@ -582,10 +582,12 @@ InstallTransaction::calcDependencies( )
     return SUCCESS;
 }
 
-string InstallTransaction::getPkgDest()
+string InstallTransaction::getPkgDest(const string& installRoot)
 {
     string pkgdest = "";
-    FILE* p = popen( ". /etc/pkgmk.conf && echo $PKGMK_PACKAGE_DIR", "r" );
+    string cmd = ". %s/etc/pkgmk.conf && echo $PKGMK_PACKAGE_DIR";
+    StringHelper::replaceAll(cmd, "%s", installRoot); 
+    FILE* p = popen(cmd.c_str(), "r");
     if ( p ) {
         char line[256];
         fgets( line, 256, p );
