@@ -1,5 +1,6 @@
 * 0.5.14	00.00.200x	Johannes Winkelmann
 - Remove handling of external dependency list
+- make InstallTransaction::getPkgDest use pkgmk.conf from install-root
 
 * 0.5.13	08.09.2006	Johannes Winkelmann
 - Show undecided versions in diff and sysup when using "prefer higher"
