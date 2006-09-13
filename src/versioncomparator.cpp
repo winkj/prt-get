@@ -69,17 +69,17 @@ COMP_RESULT compareVersions(const string& v1, const string& v2)
                 for (int k = 0; k < subTokLen; ++k) {
                     long sl1 = strtol(subtokens1[k].c_str(), &error1, 10);
                     long sl2 = strtol(subtokens2[k].c_str(), &error2, 10);
-                    if (!error1 && !error2) {
+                    if (*error1 == 0 && *error2 == 0) {
                         if (sl1 < sl2) {
                             return LESS;
                         } else if (sl1 > sl2) {
                             return GREATER;
                         }
                     } else {
-                        
+
                         // string tokens
                         if (subtokens1[k][1] == 0 && subtokens2[k][1] == 0) {
-                            
+
                             if (subtokens1[k][0] < subtokens2[k][0]) {
                                 return LESS;
                             } else if (subtokens1[k][0] > subtokens2[k][0]) {
@@ -246,6 +246,10 @@ int main(int argc, char** argv)
         check("1.4.2beta3", "1.4.2alpha2", GREATER);
         check("1.4.2-some", "1.4.2-1", UNDEFINED);
         check("1.4.2-1", "1.4.2-some", UNDEFINED);
+
+        check("7.0r63-3", "7.0r68-1", LESS);
+        check("27", "28e", LESS);
+        
     } else {
         check(argv[1], argv[2], UNDEFINED, false);
     }

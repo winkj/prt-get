@@ -742,7 +742,7 @@ pdfdir='${docdir}'
 psdir='${docdir}'
 libdir='${exec_prefix}/lib'
 localedir='${datarootdir}/locale'
-mandir='${prefix}/man'
+mandir='${datarootdir}/man'
 
 ac_prev=
 ac_dashdash=
@@ -1245,7 +1245,7 @@ Fine tuning of the installation directories:
   --datadir=DIR          read-only architecture-independent data [DATAROOTDIR]
   --infodir=DIR          info documentation [DATAROOTDIR/info]
   --localedir=DIR        locale-dependent data [DATAROOTDIR/locale]
-  --mandir=DIR           man documentation [PREFIX/man]
+  --mandir=DIR           man documentation [DATAROOTDIR/man]
   --docdir=DIR           documentation root [DATAROOTDIR/doc/PACKAGE]
   --htmldir=DIR          html documentation [DOCDIR]
   --dvidir=DIR           dvi documentation [DOCDIR]
@@ -2023,7 +2023,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=prt-get
- VERSION=5.13
+ VERSION=5.14
 
 
 cat >>confdefs.h <<_ACEOF

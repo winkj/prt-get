@@ -1,10 +1,12 @@
-* 0.5.14	00.00.200x	Johannes Winkelmann
+* 5.14		13.09.2006	Johannes Winkelmann
 - Remove handling of external dependency list
 - make InstallTransaction::getPkgDest use pkgmk.conf from install-root
 - revert getPkgDest to ignore install-root
 - determine PKGMK_PACKAGE_DIR using fgrep without sourcing pkgmk.conf
+- fix bug in "undecided" output of diff (thanks treach)
+- fix bug in version comperator introduced in 5.13
 
-* 0.5.13	08.09.2006	Johannes Winkelmann
+* 5.13		08.09.2006	Johannes Winkelmann
 - Show undecided versions in diff and sysup when using "prefer higher"
 - fix display bug in "dependent"
 - fix bug in version comparator

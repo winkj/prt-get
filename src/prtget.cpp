@@ -835,8 +835,8 @@ void PrtGet::printQuickDiff()
 
 
 void PrtGet::printFormattedDiffLine(const string& name,
-                                    const string& version1,
-                                    const string& version2,
+                                    const string& versionInstalled,
+                                    const string& versionPortsTree,
                                     bool isLocked)
 {
     cout.setf( ios::left, ios::adjustfield );
@@ -846,7 +846,7 @@ void PrtGet::printFormattedDiffLine(const string& name,
 
     cout.width( 20 );
     cout.fill( ' ' );
-    cout << version1;
+    cout << versionInstalled;
 
     string locked = "";
     if ( isLocked ) {
@@ -854,7 +854,7 @@ void PrtGet::printFormattedDiffLine(const string& name,
     }
     cout.width( 20 );
     cout.fill( ' ' );
-    cout << version2 << locked << endl;
+    cout << versionPortsTree << locked << endl;
 }
 /*!
   print an overview of port which are installed in a different version
@@ -931,7 +931,8 @@ void PrtGet::printDiff()
         }
     }
 
-    if (m_undefinedVersionComp.size()) {
+    if (m_undefinedVersionComp.size() && 
+        (m_parser->all() || m_parser->verbose()) ) {
         cout << "\n\n" << "Undecidable version differences (use --strict-diff)"
              << endl << endl;
         printFormattedDiffLine("Port",
@@ -946,8 +947,8 @@ void PrtGet::printDiff()
         for (; it != m_undefinedVersionComp.end(); ++it) {
             p = it->first;
             printFormattedDiffLine(p->name(),
-                                   p->versionReleaseString(),
                                    it->second,
+                                   p->versionReleaseString(),
                                    false);
         }
     }
@@ -1101,9 +1102,9 @@ void PrtGet::evaluateResult( InstallTransaction& transaction,
         for ( ; uit != m_undefinedVersionComp.end(); ++uit ) {
             p = uit->first;
             cout << p->name() << " ("
-                 << p->versionReleaseString()
+                 << uit->second
                  << " vs "
-                 << uit->second << ")" << endl;
+                 << p->versionReleaseString() << ")" << endl;
         }
     }
 

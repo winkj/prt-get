@@ -45,7 +45,7 @@ public:
         PG_INSTALL_ERROR,
         PG_PARTIAL_INSTALL_ERROR
     };
-    
+
     PrtGet( const ArgParser* parser );
     ~PrtGet();
 
@@ -117,7 +117,7 @@ protected:
                               list<string>& target );
 
     void warnPackageNotFound(InstallTransaction& transaction);
-    
+
     static void printFormattedDiffLine(const string& name,
                                        const string& version1,
                                        const string& version2,
@@ -155,6 +155,7 @@ protected:
     compareVersions( const string& v1, const string& v2 );
     static bool printFile(const string& file);
 
+    // map package from ports tree to version currently installed
     std::list< std::pair<const Package*, std::string> > m_undefinedVersionComp;
 };
 
