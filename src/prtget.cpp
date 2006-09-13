@@ -931,8 +931,7 @@ void PrtGet::printDiff()
         }
     }
 
-    if (m_undefinedVersionComp.size() && 
-        (m_parser->all() || m_parser->verbose()) ) {
+    if (m_undefinedVersionComp.size()) {
         cout << "\n\n" << "Undecidable version differences (use --strict-diff)"
              << endl << endl;
         printFormattedDiffLine("Port",
