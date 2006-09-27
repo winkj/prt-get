@@ -94,6 +94,8 @@ public:
     const list< pair<string,string> >& missing() const;
     const list< pair<string, InstallInfo> >& installError() const;
 
+    string pkgDest() const;
+
 private:
     bool calculateDependencies();
     void checkDependecies( const Package* package, int depends=-1 );
@@ -103,7 +105,8 @@ private:
                                   bool update,
                                   InstallInfo& info ) const;
 
-    static string getPkgDest(const string& installRoot);
+    string getPkgDest() const;
+    static string getPkgDestFromFile(const string& fileName);
 
     PkgDB* m_pkgDB;
     DepResolver m_resolver;
@@ -127,6 +130,9 @@ private:
 
     list<string> m_depNameList;
     vector<string> m_depList;
+    
+    // field for error messages
+    mutable string m_pkgDest;
 
     // packages requested to be installed not found in the ports tree
     list< pair<string, string> > m_missingPackages;

@@ -169,7 +169,6 @@ InstallTransaction::install( const ArgParser* parser,
     return SUCCESS;
 }
 
-
 /*!
   Install a single package
   \param package the package to be installed
@@ -291,7 +290,7 @@ InstallTransaction::installPackage( const Package* package,
         result = PKGMK_FAILURE;
     } else {
         // -- update
-        string pkgdest = getPkgDest(parser->installRoot());
+        string pkgdest = getPkgDest();
         if ( pkgdest != "" ) {
             // TODO: don't manipulate pkgdir
             pkgdir = pkgdest;
@@ -586,24 +585,55 @@ InstallTransaction::calcDependencies( )
 /*
  * getPkgDest assumes that you're in the build directory already
  */
-string InstallTransaction::getPkgDest(const string& installRoot)
+string InstallTransaction::getPkgDest() const
 {
     string pkgdest = "";
-    string cmd = "eval $(fgrep -h 'PKGMK_PACKAGE_DIR=' "
-        "/usr/bin/pkgmk /etc/pkgmk.conf) "
-        "&& echo $PKGMK_PACKAGE_DIR";
-    FILE* p = popen(cmd.c_str(), "r");
-    if ( p ) {
-        char line[256];
-        fgets( line, 256, p );
-        pkgdest = line;
-        pkgdest = StringHelper::stripWhiteSpace( pkgdest );
-        pclose( p );
+    pkgdest = getPkgDestFromFile("/etc/pkgmk.conf");
+    if (pkgdest.size() == 0) {
+        pkgdest = getPkgDestFromFile("/usr/bin/pkgmk");
     }
+        
+    m_pkgDest = pkgdest;
+    return pkgdest;
+}
+
+string InstallTransaction::getPkgDestFromFile(const string& fileName)
+{
+    FILE* fp = fopen(fileName.c_str(), "r");
+    if (!fp)
+        return "";
+        
+    string candidate;
+    string s;
+    char line[256];
+    while (fgets(line, 256, fp)) {
+        s = StringHelper::stripWhiteSpace(line);
+        if (StringHelper::startsWith(s, "PKGMK_PACKAGE_DIR=")) {
+            candidate = s;
+        }
+    }
+    fclose(fp);
+
+    string pkgdest = "";
+    if (candidate.length() > 0) {
+        string cmd = "eval " + candidate + " && echo $PKGMK_PACKAGE_DIR";
+        FILE* p = popen(cmd.c_str(), "r");
+        if (p) {
+            fgets(line, 256, p);
+            pkgdest = StringHelper::stripWhiteSpace(line);
+            fclose(p);
+        }
+    }
+    
     return pkgdest;
 }
 
 const list<string>& InstallTransaction::ignoredPackages() const
 {
     return m_ignoredPackages;
+}
+
+string InstallTransaction::pkgDest() const
+{
+    return m_pkgDest;
 }

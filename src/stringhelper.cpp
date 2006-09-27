@@ -78,7 +78,18 @@ string stripWhiteSpace( const string& s )
 /*!
   make sure s1 starts with s2
 */
-bool startwith_nocase( const string& s1, const string& s2 )
+bool startsWith( const string& s, const string& with )
+{
+    if (s.length() < with.length())
+        return false;
+ 
+    return s.substr(0, with.length()) == with;
+}
+
+/*!
+  make sure s1 starts with s2
+*/
+bool startsWithNoCase( const string& s1, const string& s2 )
 {
     string::const_iterator p1 = s1.begin();
     string::const_iterator p2 = s2.begin();

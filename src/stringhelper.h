@@ -28,7 +28,8 @@ void split( const string& s, char del,
             int startPos=0, bool useEmpty=true  );
 
 string stripWhiteSpace( const string& s );
-bool startwith_nocase( const string& s1, const string& s2 );
+bool startsWith( const string& s, const string& with );
+bool startsWithNoCase( const string& s1, const string& s2 );
 
 string getValue( const string& s, char del );
 string getValueBefore( const string& s, char del );

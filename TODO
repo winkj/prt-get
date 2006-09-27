@@ -1,4 +1,3 @@
-- handle 27e < 28 in version comperator
 - add --rebuild-set to dependent
 - allow dependency injection for sysup, with previews
 - prefer toolchain (patch in trac)

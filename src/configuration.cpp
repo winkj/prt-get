@@ -108,7 +108,7 @@ void Configuration::addConfig(const string& line,
                               bool configSet,
                               bool configPrepend)
 {
-    if (configSet && startwith_nocase( line, "prtdir" )) {
+    if (configSet && startsWithNoCase( line, "prtdir" )) {
         m_rootList.clear();
     }
     parseLine(line, configPrepend);
@@ -125,7 +125,7 @@ void Configuration::parseLine(const string& line, bool prepend)
         return;
     }
 
-    if ( startwith_nocase( s, "prtdir" ) ) {
+    if ( startsWithNoCase( s, "prtdir" ) ) {
         s = stripWhiteSpace( s.replace( 0, 6, "" ) );
         string path = stripWhiteSpace( getValueBefore( s, ':' ) );
         string packages = getValue( s, ':' );
@@ -142,58 +142,58 @@ void Configuration::parseLine(const string& line, bool prepend)
             cerr << "[Config error: can't access " << path
                  << "]" << endl;
         }
-    } else if ( startwith_nocase( s, "cachefile" ) ) {
+    } else if ( startsWithNoCase( s, "cachefile" ) ) {
         s = stripWhiteSpace( s.replace( 0, 9, "" ) );
         m_cacheFile = s;
-    } else if ( startwith_nocase( s, "writelog" ) ) {
+    } else if ( startsWithNoCase( s, "writelog" ) ) {
         s = stripWhiteSpace( s.replace( 0, 8, "" ) );
         if ( s == "enabled" ) {
             // it's already set to false, so we can just enable it.
             // like this, the command line switch works as well
             m_writeLog = true;
         }
-    } else if ( startwith_nocase( s, "logfile" ) ) {
+    } else if ( startsWithNoCase( s, "logfile" ) ) {
         s = stripWhiteSpace( s.replace( 0, 7, "" ) );
         m_logFilePattern = s;
-    } else if ( startwith_nocase( s, "logmode" ) ) {
+    } else if ( startsWithNoCase( s, "logmode" ) ) {
         s = stripWhiteSpace( s.replace( 0, 7, "" ) );
         if ( s == "append" ) {
             m_appendLog = true;
         }
-    } else if ( startwith_nocase( s, "rmlog_on_success" ) ) {
+    } else if ( startsWithNoCase( s, "rmlog_on_success" ) ) {
         s = stripWhiteSpace( s.replace( 0, 16, "" ) );
         if ( s == "yes" ) {
             m_removeLogOnSuccess = true;
         }
-    } else if ( startwith_nocase( s, "readme" ) ) {
+    } else if ( startsWithNoCase( s, "readme" ) ) {
         s = stripWhiteSpace( s.replace( 0, 6, "" ) );
         if ( s == "compact" ) {
             m_readmeMode = COMPACT_README;
         } else if ( s == "disabled" ) {
             m_readmeMode = NO_README;
         }
-    } else if ( startwith_nocase( s, "runscripts" ) ) {
+    } else if ( startsWithNoCase( s, "runscripts" ) ) {
         s = stripWhiteSpace( s.replace( 0, 10, "" ) );
         if ( s == "yes" ) {
             m_runScripts = true;
         }
-    } else if ( startwith_nocase( s, "preferhigher" ) ) {
+    } else if ( startsWithNoCase( s, "preferhigher" ) ) {
         s = stripWhiteSpace( s.replace( 0, 12, "" ) );
         if ( s == "yes" ) {
             m_preferHigher = true;
         }
-    } else if ( startwith_nocase( s, "useregex" ) ) {
+    } else if ( startsWithNoCase( s, "useregex" ) ) {
         s = stripWhiteSpace( s.replace( 0, 8, "" ) );
         if ( s == "yes" ) {
             m_useRegex = true;
         }
-    } else if ( startwith_nocase( s, "makecommand" ) ) {
+    } else if ( startsWithNoCase( s, "makecommand" ) ) {
         m_makeCommand = stripWhiteSpace( s.replace( 0, 11, "" ) );
-    } else if ( startwith_nocase( s, "addcommand" ) ) {
+    } else if ( startsWithNoCase( s, "addcommand" ) ) {
         m_addCommand = stripWhiteSpace( s.replace( 0, 10, "" ) );
-    } else if ( startwith_nocase( s, "removecommand" ) ) {
+    } else if ( startsWithNoCase( s, "removecommand" ) ) {
         m_removeCommand = stripWhiteSpace( s.replace( 0, 13, "" ) );
-    } else if ( startwith_nocase( s, "runscriptcommand" ) ) {
+    } else if ( startsWithNoCase( s, "runscriptcommand" ) ) {
         m_runscriptCommand = stripWhiteSpace( s.replace( 0, 16, "" ) );
     }
 }

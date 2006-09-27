@@ -199,19 +199,19 @@ void Package::load() const
             }
             string::size_type pos = line.find( ':' );
             if ( pos != string::npos ) {
-                if ( startwith_nocase( line, "desc" ) ) {
+                if ( startsWithNoCase( line, "desc" ) ) {
                     m_data->description =
                         stripWhiteSpace( getValue( line, ':' ) );
 
-                } else if ( startwith_nocase( line, "pack" ) ) {
+                } else if ( startsWithNoCase( line, "pack" ) ) {
                     m_data->packager =
                         stripWhiteSpace( getValue( line, ':' ) );
-                } else if ( startwith_nocase( line, "maint" ) ) {
+                } else if ( startsWithNoCase( line, "maint" ) ) {
                     m_data->maintainer =
                         stripWhiteSpace( getValue( line, ':' ) );
-                } else if ( startwith_nocase( line, "url" ) ) {
+                } else if ( startsWithNoCase( line, "url" ) ) {
                     m_data->url = stripWhiteSpace( getValue( line, ':' ) );
-                } else if ( startwith_nocase( line, "dep" ) ) {
+                } else if ( startsWithNoCase( line, "dep" ) ) {
                     string depends = stripWhiteSpace( getValue( line, ':' ) );
 
                     StringHelper::replaceAll( depends, " ", "," );
@@ -291,7 +291,7 @@ PackageData::PackageData( const string& name_,
 
 {
     generateVersionReleaseString();
-    
+
     hasReadme = ( stripWhiteSpace( hasReadme_ ) == "yes" );
     hasPreInstall = ( stripWhiteSpace( hasPreInstall_ ) == "yes" );
     hasPostInstall = ( stripWhiteSpace( hasPostInstall_ ) == "yes" );
