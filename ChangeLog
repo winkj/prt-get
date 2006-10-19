@@ -1,5 +1,6 @@
 * 5.15		27.09.2006	Johannes Winkelmann
 - fix PKGMK_PACKAGE_DIR determination
+- add --depsort to 'listinst'
 
 * 5.14		13.09.2006	Johannes Winkelmann
 - Remove handling of external dependency list

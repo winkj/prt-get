@@ -59,6 +59,7 @@ public:
     bool fullPath() const;
     bool recursive() const;
     bool printTree() const;
+    bool depSort() const;
 
     const string& alternateConfigFile() const;
     const string& pkgmkArgs() const;
@@ -111,6 +112,8 @@ private:
 
     bool m_recursive;
     bool m_printTree;
+    
+    bool m_depSort;
 
     string m_alternateConfigFile;
     string m_pkgmkArgs;

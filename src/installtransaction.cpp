@@ -41,7 +41,27 @@ const string InstallTransaction::PKGMK_DEFAULT_COMMAND =  "/usr/bin/pkgmk";
 const string InstallTransaction::PKGADD_DEFAULT_COMMAND = "/usr/bin/pkgadd";
 const string InstallTransaction::PKGRM_DEFAULT_COMMAND =  "/usr/bin/pkgrm";
 
+/*!
+ Create a nice InstallTransaction
+ \param names a list of port names to be installed
+ \param repo the repository to look for packages
+ \param pkgDB the pkgDB with already installed packages
+*/
+InstallTransaction::InstallTransaction( const list<string>& names,
+                                        const Repository* repo,
+                                        PkgDB* pkgDB,
+                                        const Configuration* config )
+    : m_repo( repo ),
+      m_pkgDB( pkgDB ),
+      m_depCalced( false ),
+      m_config( config )
+{
+    list<string>::const_iterator it = names.begin();
+    for ( ; it != names.end(); ++it ) {
+        m_packages.push_back( make_pair( *it, m_repo->getPackage( *it ) ) );
+    }
 
+}
 
 /*!
  Create a nice InstallTransaction
@@ -65,13 +85,15 @@ InstallTransaction::InstallTransaction( const list<char*>& names,
 
 }
 
+
+
 /*!
  Create a nice InstallTransaction
  \param names a list of port names to be installed
  \param repo the repository to look for packages
  \param pkgDB the pkgDB with already installed packages
 */
-InstallTransaction::InstallTransaction( const list<string>& names,
+InstallTransaction::InstallTransaction( const string& name,
                                         const Repository* repo,
                                         PkgDB* pkgDB,
                                         const Configuration* config )
@@ -80,10 +102,7 @@ InstallTransaction::InstallTransaction( const list<string>& names,
       m_depCalced( false ),
       m_config( config )
 {
-    list<string>::const_iterator it = names.begin();
-    for ( ; it != names.end(); ++it ) {
-        m_packages.push_back( make_pair( *it, m_repo->getPackage( *it ) ) );
-    }
+    m_packages.push_back( make_pair( name, m_repo->getPackage( name ) ) );
 
 }
 
@@ -592,7 +611,7 @@ string InstallTransaction::getPkgDest() const
     if (pkgdest.size() == 0) {
         pkgdest = getPkgDestFromFile("/usr/bin/pkgmk");
     }
-        
+
     m_pkgDest = pkgdest;
     return pkgdest;
 }
@@ -602,7 +621,7 @@ string InstallTransaction::getPkgDestFromFile(const string& fileName)
     FILE* fp = fopen(fileName.c_str(), "r");
     if (!fp)
         return "";
-        
+
     string candidate;
     string s;
     char line[256];
@@ -624,7 +643,7 @@ string InstallTransaction::getPkgDestFromFile(const string& fileName)
             fclose(p);
         }
     }
-    
+
     return pkgdest;
 }
 

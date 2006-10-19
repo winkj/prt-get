@@ -41,6 +41,10 @@ public:
                         const Repository* repo,
                         PkgDB* pkgDB,
                         const Configuration* config );
+    InstallTransaction( const string& name,
+                        const Repository* repo,
+                        PkgDB* pkgDB,
+                        const Configuration* config );
 
     static const std::string PKGMK_DEFAULT_COMMAND;
     static const std::string PKGADD_DEFAULT_COMMAND;
@@ -130,7 +134,7 @@ private:
 
     list<string> m_depNameList;
     vector<string> m_depList;
-    
+
     // field for error messages
     mutable string m_pkgDest;
 

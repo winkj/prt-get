@@ -111,7 +111,7 @@ void PrtGet::printUsage()
     cout << "  printf   <format>          print formatted list of available"
          << " ports"
          << endl;
-    cout << "  listinst [<filter>]        show a list of installed ports"
+    cout << "  listinst [<filter>][--depsort]  show a list of installed ports"
          << endl;
     cout << "  listorphans                list of ports with no "
          << "packages depending on them" << endl;
@@ -536,24 +536,53 @@ void PrtGet::listInstalled()
         return;
     }
 
-    if ( m_parser->verbose() > 1 ) {
-        // warning: will slow down the process...
-        initRepo();
-    }
+    if (m_parser->depSort()) {
+	// sort by dependency, without injecting missing ones
+	// calcDependencies chokes on the full list, so go through the
+	// ports one by one
+	
+	initRepo();
+	map<string, string>::iterator mit;
+	string name;
+	while (!l.empty()) {
+	    mit = l.begin();
+	    name = mit->first;
+	    l.erase(mit);
+	
+	    InstallTransaction trans( name, m_repo, m_pkgDB, m_config );
+	    InstallTransaction::InstallResult result = trans.calcDependencies();
+	    const list<string>& depRef = trans.dependencies();
+	    list<string>::const_iterator it = depRef.begin();
 
-    for ( ; it != l.end(); ++it ) {
-        cout <<  it->first.c_str();
-        if ( m_parser->verbose() > 0 ) {
-            cout << " " << it->second.c_str();
-        }
-        if ( m_parser->verbose() > 1 ) {
-            const Package* p = m_repo->getPackage( it->first );
-            if ( p ) {
-                cout << " " << p->description();
-            }
-        }
 
-        cout << endl;
+	    for (; it != depRef.end(); ++it) {
+		if (l.find(*it) != l.end()) {
+		    cout << *it << endl;
+		    l.erase(*it);
+		}	
+	    }
+	    cout << name << endl;
+        }
+	
+    } else {
+	for ( ; it != l.end(); ++it ) {
+	    if ( m_parser->verbose() > 1 ) {
+		// warning: will slow down the process...
+		initRepo();
+	    }
+	    cout <<  it->first.c_str();
+	    if ( m_parser->verbose() > 0 ) {
+		cout << " " << it->second.c_str();
+	    }
+	    if ( m_parser->verbose() > 1 ) {
+		const Package* p = m_repo->getPackage( it->first );
+		if ( p ) {
+		    cout << " " << p->description();
+		}
+	    }
+
+	    cout << endl;
+	}
     }
 }
 
@@ -659,7 +688,7 @@ void PrtGet::executeTransaction( InstallTransaction& transaction,
         cout << m_appName << " couldn't excecute pkgadd. "
              << "Make sure it's installed properly" << endl;
     } else if ( result == InstallTransaction::PKGDEST_ERROR ) {
-        cout << m_appName << ": error changing to PKGDEST directory  " 
+        cout << m_appName << ": error changing to PKGDEST directory  "
              << transaction.pkgDest() << endl;
         failed = true;
     } else if ( result == InstallTransaction::PKGADD_FAILURE ) {

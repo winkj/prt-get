@@ -47,7 +47,8 @@ ArgParser::ArgParser( int argc, char** argv )
       m_useRegex(false),
       m_fullPath(false),
       m_recursive(false),
-      m_printTree(false)
+      m_printTree(false),
+      m_depSort(false)
 {
 }
 
@@ -203,6 +204,8 @@ bool ArgParser::parse()
                 m_recursive = true;
             } else if ( s == "--tree" ) {
                 m_printTree = true;
+            } else if ( s == "--depsort" ) {
+                m_depSort = true;
 
             } else if ( s == "-f" ) {
                 m_pkgaddArgs += " " + s;
@@ -397,6 +400,11 @@ bool ArgParser::recursive() const
 bool ArgParser::printTree() const
 {
     return m_printTree;
+}
+
+bool ArgParser::depSort() const
+{
+    return m_depSort;
 }
 
 const string& ArgParser::commandName() const

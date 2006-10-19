@@ -332,7 +332,7 @@ to filter by package name.
 
 
 .TP 
-.B listinst [\-v|\-vv] [filter] [--regex]
+.B listinst [\-v|\-vv] [filter] [--regex] [--depsort]
 List installed ports. It's basically the same as
 .B pkginfo \-i,
 but omits version when called without verbose (\-v, \-vv) switch. Plus
@@ -343,7 +343,9 @@ adds version and description.
 both the ports database and the ports tree.
 It's also possible to use shell like
 .B wildcards
-for the listinst command. Make sure you escape where needed
+for the listinst command. Make sure you escape where needed. Finally, by
+default it's sorted alphabetically; use the \-\-depsort switch to sort by
+dependencies
 
 .TP 
 .B listorphans [\-v|\-vv]
