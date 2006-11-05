@@ -314,21 +314,25 @@ void Package::expandShellCommands(std::string& input,
     string endTag[TAG_COUNT] = { "`", ")" };
 
     for (int i = 0; i < TAG_COUNT; ++i) {
-        string::size_type pos;
-        while ((pos = input.find(startTag[i])) != string::npos) {
-
+        string::size_type pos, dpos = 0;
+        
+        int len;
+        pos = 0;
+        while ((pos = input.find(startTag[i], pos)) != string::npos) {
+            len = input.length();
+            
             if (unameBuf.release) {
                 input = replaceAll(input,
                                    startTag[i] + "uname -r" + endTag[i],
                                    unameBuf.release);
             }
 
-            pos = input.find(startTag[i] + "date");
-            if (pos != string::npos) {
+            dpos = input.find(startTag[i] + "date");
+            if (dpos != string::npos) {
                 // NOTE: currently only works for one date pattern
                 string::size_type startpos, endpos;
-                endpos = input.find(endTag[i], pos+1);
-                startpos = input.find('+', pos+1);
+                endpos = input.find(endTag[i], dpos+1);
+                startpos = input.find('+', dpos+1);
 
                 string format = input.substr(startpos+1, endpos-startpos-1);
 
@@ -340,9 +344,11 @@ void Package::expandShellCommands(std::string& input,
                 char timeBuf[32];
                 strftime(timeBuf, 32, format.c_str(), localtime(&timeNow));
 
-                input = input.substr(0, pos) + timeBuf +
+                input = input.substr(0, dpos) + timeBuf +
                     input.substr(endpos+1);
             }
+            
+            ++pos;
         }
     }
 }
