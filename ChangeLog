@@ -1,6 +1,7 @@
 * 5.16		26.06.2008	Johannes Winkelmann
 - don't loop forever when version= contains unsupported $() tokens
 - gcc 4.3 fixes (thanks Fredrik)
+- support path in install summary
 
 * 5.15		27.09.2006	Johannes Winkelmann
 - fix PKGMK_PACKAGE_DIR determination

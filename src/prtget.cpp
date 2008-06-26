@@ -1092,6 +1092,14 @@ void PrtGet::evaluateResult( InstallTransaction& transaction,
         bool atLeastOnePackageHasReadme = false;
 
         for ( ; iit != inst.end(); ++iit ) {
+	    if (m_parser->printPath()) {
+		// TODO: avoid lookup by tuning
+		// InstallTransaction::installedPackages()
+		const Package* p = m_repo->getPackage(iit->first);
+		if (p) {
+		    cout << p->path() << "/";
+		}
+	    }
             cout << iit->first;
             if ( iit->second.hasReadme ) {
                 if ( m_config->readmeMode() ==
