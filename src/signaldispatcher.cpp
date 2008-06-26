@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
 #include "signaldispatcher.h"

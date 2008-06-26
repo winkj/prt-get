@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <fnmatch.h>
 #include <libgen.h>
+#include <cstring>
 
 using namespace std;
 

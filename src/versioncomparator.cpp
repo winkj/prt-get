@@ -17,6 +17,8 @@
 #include <cctype>
 #include <vector>
 #include <iostream>
+#include <stdlib.h>
+#include <cstring>
 using namespace std;
 
 #include "stringhelper.h"
