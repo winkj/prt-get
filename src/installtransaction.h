@@ -99,6 +99,7 @@ public:
     const list< pair<string, InstallInfo> >& installError() const;
 
     static string getPkgmkPackageDir();
+    static string getPkgmkCompressionMode();
 
 private:
     bool calculateDependencies();

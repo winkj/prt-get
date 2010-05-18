@@ -347,7 +347,7 @@ InstallTransaction::installPackage( const Package* package,
             args +=
                 package->name()    + "#" +
                 package->version() + "-" +
-                package->release() + ".pkg.tar.gz";
+                package->release() + ".pkg.tar." + getPkgmkCompressionMode();
 
 
             // - inform the user about what's happening
@@ -654,4 +654,9 @@ const list<string>& InstallTransaction::ignoredPackages() const
 string InstallTransaction::getPkgmkPackageDir()
 {
     return getPkgmkSetting("PKGMK_PACKAGE_DIR");
+}
+
+string InstallTransaction::getPkgmkCompressionMode()
+{
+    return getPkgmkSetting("PKGMK_COMPRESSION_MODE");
 }
