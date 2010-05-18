@@ -2138,6 +2138,22 @@ void PrtGet::dumpConfig()
     cout.fill( ' ' );
     cout << "  Append log: " <<(m_config->appendLog() ? "yes" : "no" ) << endl;
 
+    cout << endl;
+    cout.setf( ios::left, ios::adjustfield );
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout << "Pkgmk settings: " << m_config->logFilePattern() << endl;
+    cout.setf( ios::left, ios::adjustfield );
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout << "  Package dir: " << InstallTransaction::getPkgmkPackageDir() 
+         << endl;
+    
+    cout.setf( ios::left, ios::adjustfield );
+    cout.width( 20 );
+    cout.fill( ' ' );
+    cout << "  Compression mode: " 
+         << InstallTransaction::getPkgmkCompressionMode() << endl;
 
 
     cout << endl;
