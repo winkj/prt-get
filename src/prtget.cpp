@@ -689,7 +689,7 @@ void PrtGet::executeTransaction( InstallTransaction& transaction,
              << "Make sure it's installed properly" << endl;
     } else if ( result == InstallTransaction::PKGDEST_ERROR ) {
         cout << m_appName << ": error changing to PKGDEST directory  "
-             << transaction.pkgDest() << endl;
+             << transaction.getPkgmkPackageDir() << endl;
         failed = true;
     } else if ( result == InstallTransaction::PKGADD_FAILURE ) {
         cout << m_appName << ": error while pkgadding " << endl;
