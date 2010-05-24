@@ -1238,7 +1238,7 @@ void PrtGet::printf()
     assertExactArgCount(1);
 
     initRepo();
-    string filter = "*";
+    string filter = m_parser->useRegex() ? "." : "*";
     if ( m_parser->hasFilter() ) {
         filter = m_parser->filter();
     }
