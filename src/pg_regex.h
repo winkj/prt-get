@@ -10,8 +10,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _REGEX_H_
-#define _REGEX_H_
+#ifndef _PG_REGEX_H_
+#define _PG_REGEX_H_
 
 #include <sys/types.h>
 #include <regex.h>
