@@ -20,7 +20,7 @@ _prt-get()
                     dependent sysup current lock unlock \
                     listlocked diff quickdiff depends quickdep \
                     dup isinst cat ls edit deptree \
-                    remove listinst dumpconfig listofphans' $cur ))
+                    remove listinst dumpconfig listorphans' $cur ))
         fi
 
        
