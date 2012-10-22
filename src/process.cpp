@@ -112,6 +112,7 @@ int Process::execLog(const int argc, char** argv)
                 write( m_fdlog, readbuf, bytes );
 	    }
 	}
+        close( fdpipe[0] );
 
         if ( wpval != pid ) {
             status = -1;
@@ -198,6 +199,7 @@ int Process::execShellLog(const char* SHELL)
                 write( m_fdlog, readbuf, bytes );
 	    }
 	}
+        close( fdpipe[0] );
 
         if ( wpval != pid ) {
             status = -1;
