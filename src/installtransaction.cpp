@@ -658,5 +658,7 @@ string InstallTransaction::getPkgmkPackageDir()
 
 string InstallTransaction::getPkgmkCompressionMode()
 {
-    return getPkgmkSetting("PKGMK_COMPRESSION_MODE");
+    string value = getPkgmkSetting("PKGMK_COMPRESSION_MODE");
+
+    return value.size() ? value : "gz";
 }
