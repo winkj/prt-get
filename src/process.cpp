@@ -88,8 +88,8 @@ int Process::execLog(const int argc, char** argv)
     if ( pid == 0 ) {
         // child process
         close( fdpipe[0] );
-	dup2( fdpipe[1], 1 );
-	dup2( fdpipe[1], 2 );
+	dup2( fdpipe[1], STDOUT_FILENO );
+	dup2( fdpipe[1], STDERR_FILENO );
 
         execv( m_app.c_str(), argv );
         _exit( EXIT_FAILURE );
@@ -175,8 +175,8 @@ int Process::execShellLog(const char* SHELL)
     if ( pid == 0 ) {
         // child process
         close( fdpipe[0] );
-	dup2( fdpipe[1], 1 );
-	dup2( fdpipe[1], 2 );
+	dup2( fdpipe[1], STDOUT_FILENO );
+	dup2( fdpipe[1], STDERR_FILENO );
 
         execl( SHELL, SHELL, "-c", (m_app + " " + m_arguments).c_str(), NULL );
         _exit( EXIT_FAILURE );
