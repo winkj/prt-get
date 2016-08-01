@@ -2142,7 +2142,7 @@ void PrtGet::dumpConfig()
     cout.setf( ios::left, ios::adjustfield );
     cout.width( 20 );
     cout.fill( ' ' );
-    cout << "Pkgmk settings: " << m_config->logFilePattern() << endl;
+    cout << "Pkgmk settings:" << endl;
     cout.setf( ios::left, ios::adjustfield );
     cout.width( 20 );
     cout.fill( ' ' );
