@@ -180,6 +180,8 @@ void PrtGet::printUsage()
     cout << "                -if                 ignore footprint" << endl;
     cout << "                -um                 update md5sum" << endl;
     cout << "                -im                 ignore md5sum" << endl;
+    cout << "                -us                 update signature" << endl;
+    cout << "                -is                 ignore signature" << endl;
     cout << "                --margs=<string>    pass 'string' to pkgmk"
          << endl;
     cout << "                --aargs=<string>    pass 'string' to pkgadd"
